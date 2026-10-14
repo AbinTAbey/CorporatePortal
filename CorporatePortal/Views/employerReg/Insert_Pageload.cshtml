@@ -1,0 +1,126 @@
+﻿
+@model CorporatePortal.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Employer Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="max-width: 600px; margin: 40px auto;">
+
+    <h2 class="text-center">Employer Registration</h2>
+    <p class="text-center text-muted">
+        Create an employer account to hire talent.
+    </p>
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+        <p class="text-center text-muted">Redirecting to Login in 3 seconds...</p>
+        <script>
+            window.setTimeout(function () {
+                window.location.href = '@Url.Action("Login_Pageload", "Login")';
+            }, 3000);
+        </script>
+    }
+
+    @Html.ValidationSummary(false, "",
+        new { @class = "text-danger" })
+
+    @using (Html.BeginForm(
+        "Insert_Pageload",
+        "employerReg",
+        FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Enter your full name"
+                })
+            @Html.ValidationMessageFor(m => m.Name, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Enter your email",
+                    type = "email"
+                })
+            @Html.ValidationMessageFor(m => m.Email, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Phone)
+            @Html.TextBoxFor(m => m.Phone,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Enter phone number"
+                })
+            @Html.ValidationMessageFor(m => m.Phone, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Choose a username"
+                })
+            @Html.ValidationMessageFor(m => m.Username, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Create a password"
+                })
+            @Html.ValidationMessageFor(m => m.Password, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword,
+                new
+                {
+                    @class = "form-control",
+                    placeholder = "Confirm your password"
+                })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary btn-block">
+            Register as Employer
+        </button>
+    }
+
+    <p class="text-center" style="margin-top: 20px;">
+        Looking for a job?
+        @Html.ActionLink(
+            "Register as Job Seeker",
+            "Insert_Pageload",
+            "JobSeekerReg")
+    </p>
+</div>

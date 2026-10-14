@@ -1,0 +1,651 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CorporatePortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CompanyDetails">
+          <Key>
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="CompanyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployerId" Type="int" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="Website" Type="varchar" MaxLength="200" />
+          <Property Name="Address" Type="varchar" MaxLength="300" />
+          <Property Name="Description" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Employer">
+          <Key>
+            <PropertyRef Name="EmployerId" />
+          </Key>
+          <Property Name="EmployerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Jobs">
+          <Key>
+            <PropertyRef Name="JobId" />
+          </Key>
+          <Property Name="JobId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployerId" Type="int" Nullable="false" />
+          <Property Name="JobTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="JobType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ExperienceRequired" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Location" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="SalaryRange" Type="varchar" MaxLength="50" />
+          <Property Name="RequiredSkills" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="JobDescription" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Jobseeker">
+          <Key>
+            <PropertyRef Name="JobseekerId" />
+          </Key>
+          <Property Name="JobseekerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JobseekerProfile">
+          <Key>
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="ProfileId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="JobseekerId" Type="int" Nullable="false" />
+          <Property Name="ResumePath" Type="varchar" MaxLength="255" />
+          <Property Name="Qualification" Type="varchar" MaxLength="150" />
+          <Property Name="Skills" Type="varchar" MaxLength="500" />
+          <Property Name="Experience" Type="varchar" MaxLength="50" />
+          <Property Name="Address" Type="varchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="Login">
+          <Key>
+            <PropertyRef Name="LoginId" />
+          </Key>
+          <Property Name="LoginId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PasswordHash" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Role" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="JobseekerId" Type="int" />
+          <Property Name="EmployerId" Type="int" />
+        </EntityType>
+        <Association Name="FK__CompanyDe__Emplo__5AEE82B9">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
+          <End Role="CompanyDetails" Type="Self.CompanyDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="CompanyDetails">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Jobs__EmployerId__571DF1D5">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
+          <End Role="Jobs" Type="Self.Jobs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="Jobs">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Jobseeker__Jobse__5EBF139D">
+          <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="1" />
+          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jobseeker">
+              <PropertyRef Name="JobseekerId" />
+            </Principal>
+            <Dependent Role="JobseekerProfile">
+              <PropertyRef Name="JobseekerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Login__EmployerI__52593CB8">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="0..1" />
+          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Login__Jobseeker__5165187F">
+          <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="0..1" />
+          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jobseeker">
+              <PropertyRef Name="JobseekerId" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="JobseekerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="sp_CreateAdmin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Username" Type="varchar" Mode="In" />
+          <Parameter Name="PasswordHash" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_GetEmployerJobs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EmployerId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_GetJobDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="JobId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_GetJobs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="JobTitle" Type="varchar" Mode="In" />
+          <Parameter Name="ExperienceRequired" Type="varchar" Mode="In" />
+          <Parameter Name="SalaryRange" Type="varchar" Mode="In" />
+          <Parameter Name="Location" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_ManageCompanyDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EmployerId" Type="int" Mode="In" />
+          <Parameter Name="CompanyName" Type="varchar" Mode="In" />
+          <Parameter Name="Website" Type="varchar" Mode="In" />
+          <Parameter Name="Address" Type="varchar" Mode="In" />
+          <Parameter Name="Description" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_ManageJobs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Action" Type="varchar" Mode="In" />
+          <Parameter Name="EmployerId" Type="int" Mode="In" />
+          <Parameter Name="JobId" Type="int" Mode="In" />
+          <Parameter Name="JobTitle" Type="varchar" Mode="In" />
+          <Parameter Name="JobType" Type="varchar" Mode="In" />
+          <Parameter Name="ExperienceRequired" Type="varchar" Mode="In" />
+          <Parameter Name="Location" Type="varchar" Mode="In" />
+          <Parameter Name="SalaryRange" Type="varchar" Mode="In" />
+          <Parameter Name="RequiredSkills" Type="varchar" Mode="In" />
+          <Parameter Name="JobDescription" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_ManageJobseekerProfile" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="JobseekerId" Type="int" Mode="In" />
+          <Parameter Name="ResumePath" Type="varchar" Mode="In" />
+          <Parameter Name="Qualification" Type="varchar" Mode="In" />
+          <Parameter Name="Skills" Type="varchar" Mode="In" />
+          <Parameter Name="Experience" Type="varchar" Mode="In" />
+          <Parameter Name="Address" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_RegisterUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="varchar" Mode="In" />
+          <Parameter Name="Email" Type="varchar" Mode="In" />
+          <Parameter Name="Phone" Type="varchar" Mode="In" />
+          <Parameter Name="Username" Type="varchar" Mode="In" />
+          <Parameter Name="PasswordHash" Type="varchar" Mode="In" />
+          <Parameter Name="Role" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="sp_ValidateLogin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Username" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="CorporatePortalModelStoreContainer">
+          <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employer" EntityType="Self.Employer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Jobs" EntityType="Self.Jobs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Jobseeker" EntityType="Self.Jobseeker" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JobseekerProfile" EntityType="Self.JobseekerProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Login" EntityType="Self.Login" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CompanyDe__Emplo__5AEE82B9" Association="Self.FK__CompanyDe__Emplo__5AEE82B9">
+            <End Role="Employer" EntitySet="Employer" />
+            <End Role="CompanyDetails" EntitySet="CompanyDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Jobs__EmployerId__571DF1D5" Association="Self.FK__Jobs__EmployerId__571DF1D5">
+            <End Role="Employer" EntitySet="Employer" />
+            <End Role="Jobs" EntitySet="Jobs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Jobseeker__Jobse__5EBF139D" Association="Self.FK__Jobseeker__Jobse__5EBF139D">
+            <End Role="Jobseeker" EntitySet="Jobseeker" />
+            <End Role="JobseekerProfile" EntitySet="JobseekerProfile" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Login__EmployerI__52593CB8" Association="Self.FK__Login__EmployerI__52593CB8">
+            <End Role="Employer" EntitySet="Employer" />
+            <End Role="Login" EntitySet="Login" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Login__Jobseeker__5165187F" Association="Self.FK__Login__Jobseeker__5165187F">
+            <End Role="Jobseeker" EntitySet="Jobseeker" />
+            <End Role="Login" EntitySet="Login" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CorporatePortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CompanyDetail">
+          <Key>
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="CompanyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployerId" Type="Int32" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Website" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Employer" Relationship="Self.FK__CompanyDe__Emplo__5AEE82B9" FromRole="CompanyDetails" ToRole="Employer" />
+        </EntityType>
+        <EntityType Name="Employer">
+          <Key>
+            <PropertyRef Name="EmployerId" />
+          </Key>
+          <Property Name="EmployerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CompanyDetails" Relationship="Self.FK__CompanyDe__Emplo__5AEE82B9" FromRole="Employer" ToRole="CompanyDetails" />
+          <NavigationProperty Name="Jobs" Relationship="Self.FK__Jobs__EmployerId__571DF1D5" FromRole="Employer" ToRole="Jobs" />
+          <NavigationProperty Name="Logins" Relationship="Self.FK__Login__EmployerI__52593CB8" FromRole="Employer" ToRole="Login" />
+        </EntityType>
+        <EntityType Name="Job">
+          <Key>
+            <PropertyRef Name="JobId" />
+          </Key>
+          <Property Name="JobId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployerId" Type="Int32" Nullable="false" />
+          <Property Name="JobTitle" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JobType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ExperienceRequired" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SalaryRange" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RequiredSkills" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JobDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employer" Relationship="Self.FK__Jobs__EmployerId__571DF1D5" FromRole="Jobs" ToRole="Employer" />
+        </EntityType>
+        <EntityType Name="Jobseeker">
+          <Key>
+            <PropertyRef Name="JobseekerId" />
+          </Key>
+          <Property Name="JobseekerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="JobseekerProfiles" Relationship="Self.FK__Jobseeker__Jobse__5EBF139D" FromRole="Jobseeker" ToRole="JobseekerProfile" />
+          <NavigationProperty Name="Logins" Relationship="Self.FK__Login__Jobseeker__5165187F" FromRole="Jobseeker" ToRole="Login" />
+        </EntityType>
+        <EntityType Name="JobseekerProfile">
+          <Key>
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="ProfileId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="JobseekerId" Type="Int32" Nullable="false" />
+          <Property Name="ResumePath" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Qualification" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Skills" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Experience" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Jobseeker" Relationship="Self.FK__Jobseeker__Jobse__5EBF139D" FromRole="JobseekerProfile" ToRole="Jobseeker" />
+        </EntityType>
+        <EntityType Name="Login">
+          <Key>
+            <PropertyRef Name="LoginId" />
+          </Key>
+          <Property Name="LoginId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JobseekerId" Type="Int32" />
+          <Property Name="EmployerId" Type="Int32" />
+          <NavigationProperty Name="Employer" Relationship="Self.FK__Login__EmployerI__52593CB8" FromRole="Login" ToRole="Employer" />
+          <NavigationProperty Name="Jobseeker" Relationship="Self.FK__Login__Jobseeker__5165187F" FromRole="Login" ToRole="Jobseeker" />
+        </EntityType>
+        <Association Name="FK__CompanyDe__Emplo__5AEE82B9">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
+          <End Role="CompanyDetails" Type="Self.CompanyDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="CompanyDetails">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Jobs__EmployerId__571DF1D5">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
+          <End Role="Jobs" Type="Self.Job" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="Jobs">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Login__EmployerI__52593CB8">
+          <End Role="Employer" Type="Self.Employer" Multiplicity="0..1" />
+          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employer">
+              <PropertyRef Name="EmployerId" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="EmployerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Jobseeker__Jobse__5EBF139D">
+          <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="1" />
+          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jobseeker">
+              <PropertyRef Name="JobseekerId" />
+            </Principal>
+            <Dependent Role="JobseekerProfile">
+              <PropertyRef Name="JobseekerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Login__Jobseeker__5165187F">
+          <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="0..1" />
+          <End Role="Login" Type="Self.Login" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jobseeker">
+              <PropertyRef Name="JobseekerId" />
+            </Principal>
+            <Dependent Role="Login">
+              <PropertyRef Name="JobseekerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CorporatePortalEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetail" />
+          <EntitySet Name="Employers" EntityType="Self.Employer" />
+          <EntitySet Name="Jobs" EntityType="Self.Job" />
+          <EntitySet Name="Jobseekers" EntityType="Self.Jobseeker" />
+          <EntitySet Name="JobseekerProfiles" EntityType="Self.JobseekerProfile" />
+          <EntitySet Name="Logins" EntityType="Self.Login" />
+          <AssociationSet Name="FK__CompanyDe__Emplo__5AEE82B9" Association="Self.FK__CompanyDe__Emplo__5AEE82B9">
+            <End Role="Employer" EntitySet="Employers" />
+            <End Role="CompanyDetails" EntitySet="CompanyDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Jobs__EmployerId__571DF1D5" Association="Self.FK__Jobs__EmployerId__571DF1D5">
+            <End Role="Employer" EntitySet="Employers" />
+            <End Role="Jobs" EntitySet="Jobs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Login__EmployerI__52593CB8" Association="Self.FK__Login__EmployerI__52593CB8">
+            <End Role="Employer" EntitySet="Employers" />
+            <End Role="Login" EntitySet="Logins" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Jobseeker__Jobse__5EBF139D" Association="Self.FK__Jobseeker__Jobse__5EBF139D">
+            <End Role="Jobseeker" EntitySet="Jobseekers" />
+            <End Role="JobseekerProfile" EntitySet="JobseekerProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Login__Jobseeker__5165187F" Association="Self.FK__Login__Jobseeker__5165187F">
+            <End Role="Jobseeker" EntitySet="Jobseekers" />
+            <End Role="Login" EntitySet="Logins" />
+          </AssociationSet>
+          <FunctionImport Name="sp_CreateAdmin" ReturnType="Collection(Decimal)">
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="PasswordHash" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GetEmployerJobs" ReturnType="Collection(CorporatePortalModel.sp_GetEmployerJobs_Result)">
+            <Parameter Name="EmployerId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GetJobDetails" ReturnType="Collection(CorporatePortalModel.sp_GetJobDetails_Result)">
+            <Parameter Name="JobId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GetJobs" ReturnType="Collection(CorporatePortalModel.sp_GetJobs_Result)">
+            <Parameter Name="JobTitle" Mode="In" Type="String" />
+            <Parameter Name="ExperienceRequired" Mode="In" Type="String" />
+            <Parameter Name="SalaryRange" Mode="In" Type="String" />
+            <Parameter Name="Location" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ManageCompanyDetails" ReturnType="Collection(String)">
+            <Parameter Name="EmployerId" Mode="In" Type="Int32" />
+            <Parameter Name="CompanyName" Mode="In" Type="String" />
+            <Parameter Name="Website" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+            <Parameter Name="Description" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ManageJobs" ReturnType="Collection(Int32)">
+            <Parameter Name="Action" Mode="In" Type="String" />
+            <Parameter Name="EmployerId" Mode="In" Type="Int32" />
+            <Parameter Name="JobId" Mode="In" Type="Int32" />
+            <Parameter Name="JobTitle" Mode="In" Type="String" />
+            <Parameter Name="JobType" Mode="In" Type="String" />
+            <Parameter Name="ExperienceRequired" Mode="In" Type="String" />
+            <Parameter Name="Location" Mode="In" Type="String" />
+            <Parameter Name="SalaryRange" Mode="In" Type="String" />
+            <Parameter Name="RequiredSkills" Mode="In" Type="String" />
+            <Parameter Name="JobDescription" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ManageJobseekerProfile" ReturnType="Collection(String)">
+            <Parameter Name="JobseekerId" Mode="In" Type="Int32" />
+            <Parameter Name="ResumePath" Mode="In" Type="String" />
+            <Parameter Name="Qualification" Mode="In" Type="String" />
+            <Parameter Name="Skills" Mode="In" Type="String" />
+            <Parameter Name="Experience" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_RegisterUser" ReturnType="Collection(String)">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Phone" Mode="In" Type="String" />
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="PasswordHash" Mode="In" Type="String" />
+            <Parameter Name="Role" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ValidateLogin" ReturnType="Collection(CorporatePortalModel.sp_ValidateLogin_Result)">
+            <Parameter Name="Username" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_GetEmployerJobs_Result">
+          <Property Type="Int32" Name="JobId" Nullable="false" />
+          <Property Type="String" Name="JobTitle" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="JobType" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ExperienceRequired" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Location" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="SalaryRange" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RequiredSkills" Nullable="false" MaxLength="500" />
+          <Property Type="String" Name="JobDescription" Nullable="false" />
+          <Property Type="String" Name="CompanyName" Nullable="true" MaxLength="150" />
+        </ComplexType>
+        <ComplexType Name="sp_GetJobDetails_Result">
+          <Property Type="Int32" Name="JobId" Nullable="false" />
+          <Property Type="Int32" Name="EmployerId" Nullable="false" />
+          <Property Type="String" Name="JobTitle" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="JobType" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ExperienceRequired" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Location" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="SalaryRange" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RequiredSkills" Nullable="false" MaxLength="500" />
+          <Property Type="String" Name="JobDescription" Nullable="false" />
+          <Property Type="String" Name="CompanyName" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="Website" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="CompanyAddress" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="CompanyDescription" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_GetJobs_Result">
+          <Property Type="Int32" Name="JobId" Nullable="false" />
+          <Property Type="String" Name="JobTitle" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="CompanyName" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="Location" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="ExperienceRequired" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SalaryRange" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="JobType" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="RequiredSkills" Nullable="false" MaxLength="500" />
+          <Property Type="String" Name="JobDescription" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_ValidateLogin_Result">
+          <Property Type="Int32" Name="LoginId" Nullable="false" />
+          <Property Type="String" Name="Username" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PasswordHash" Nullable="false" MaxLength="255" />
+          <Property Type="String" Name="Role" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="JobseekerId" Nullable="true" />
+          <Property Type="Int32" Name="EmployerId" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CorporatePortalModelStoreContainer" CdmEntityContainer="CorporatePortalEntities">
+          <EntitySetMapping Name="CompanyDetails">
+            <EntityTypeMapping TypeName="CorporatePortalModel.CompanyDetail">
+              <MappingFragment StoreEntitySet="CompanyDetails">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employers">
+            <EntityTypeMapping TypeName="CorporatePortalModel.Employer">
+              <MappingFragment StoreEntitySet="Employer">
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Jobs">
+            <EntityTypeMapping TypeName="CorporatePortalModel.Job">
+              <MappingFragment StoreEntitySet="Jobs">
+                <ScalarProperty Name="JobId" ColumnName="JobId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="ExperienceRequired" ColumnName="ExperienceRequired" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="SalaryRange" ColumnName="SalaryRange" />
+                <ScalarProperty Name="RequiredSkills" ColumnName="RequiredSkills" />
+                <ScalarProperty Name="JobDescription" ColumnName="JobDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Jobseekers">
+            <EntityTypeMapping TypeName="CorporatePortalModel.Jobseeker">
+              <MappingFragment StoreEntitySet="Jobseeker">
+                <ScalarProperty Name="JobseekerId" ColumnName="JobseekerId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JobseekerProfiles">
+            <EntityTypeMapping TypeName="CorporatePortalModel.JobseekerProfile">
+              <MappingFragment StoreEntitySet="JobseekerProfile">
+                <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+                <ScalarProperty Name="JobseekerId" ColumnName="JobseekerId" />
+                <ScalarProperty Name="ResumePath" ColumnName="ResumePath" />
+                <ScalarProperty Name="Qualification" ColumnName="Qualification" />
+                <ScalarProperty Name="Skills" ColumnName="Skills" />
+                <ScalarProperty Name="Experience" ColumnName="Experience" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Logins">
+            <EntityTypeMapping TypeName="CorporatePortalModel.Login">
+              <MappingFragment StoreEntitySet="Login">
+                <ScalarProperty Name="LoginId" ColumnName="LoginId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="JobseekerId" ColumnName="JobseekerId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_CreateAdmin" FunctionName="CorporatePortalModel.Store.sp_CreateAdmin" />
+          <FunctionImportMapping FunctionImportName="sp_GetEmployerJobs" FunctionName="CorporatePortalModel.Store.sp_GetEmployerJobs">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorporatePortalModel.sp_GetEmployerJobs_Result">
+                <ScalarProperty Name="JobId" ColumnName="JobId" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="ExperienceRequired" ColumnName="ExperienceRequired" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="SalaryRange" ColumnName="SalaryRange" />
+                <ScalarProperty Name="RequiredSkills" ColumnName="RequiredSkills" />
+                <ScalarProperty Name="JobDescription" ColumnName="JobDescription" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetJobDetails" FunctionName="CorporatePortalModel.Store.sp_GetJobDetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorporatePortalModel.sp_GetJobDetails_Result">
+                <ScalarProperty Name="JobId" ColumnName="JobId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="ExperienceRequired" ColumnName="ExperienceRequired" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="SalaryRange" ColumnName="SalaryRange" />
+                <ScalarProperty Name="RequiredSkills" ColumnName="RequiredSkills" />
+                <ScalarProperty Name="JobDescription" ColumnName="JobDescription" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="CompanyAddress" ColumnName="CompanyAddress" />
+                <ScalarProperty Name="CompanyDescription" ColumnName="CompanyDescription" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetJobs" FunctionName="CorporatePortalModel.Store.sp_GetJobs">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorporatePortalModel.sp_GetJobs_Result">
+                <ScalarProperty Name="JobId" ColumnName="JobId" />
+                <ScalarProperty Name="JobTitle" ColumnName="JobTitle" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="ExperienceRequired" ColumnName="ExperienceRequired" />
+                <ScalarProperty Name="SalaryRange" ColumnName="SalaryRange" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="RequiredSkills" ColumnName="RequiredSkills" />
+                <ScalarProperty Name="JobDescription" ColumnName="JobDescription" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_ManageCompanyDetails" FunctionName="CorporatePortalModel.Store.sp_ManageCompanyDetails" />
+          <FunctionImportMapping FunctionImportName="sp_ManageJobs" FunctionName="CorporatePortalModel.Store.sp_ManageJobs" />
+          <FunctionImportMapping FunctionImportName="sp_ManageJobseekerProfile" FunctionName="CorporatePortalModel.Store.sp_ManageJobseekerProfile" />
+          <FunctionImportMapping FunctionImportName="sp_RegisterUser" FunctionName="CorporatePortalModel.Store.sp_RegisterUser" />
+          <FunctionImportMapping FunctionImportName="sp_ValidateLogin" FunctionName="CorporatePortalModel.Store.sp_ValidateLogin">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorporatePortalModel.sp_ValidateLogin_Result">
+                <ScalarProperty Name="LoginId" ColumnName="LoginId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="JobseekerId" ColumnName="JobseekerId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,68 @@
+﻿
+@model IEnumerable<CorporatePortal.Models.sp_GetEmployerJobs_Result>
+@using System.Linq
+@{
+    ViewBag.Title = "Manage Jobs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
+    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-table-wrap,.finder-empty { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
+    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
+    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
+    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; } .finder-button:hover,.finder-logout:hover { background:#d85f4d; color:#fff; }
+    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 18px; font-weight:700; } .finder-table-wrap { overflow-x:auto; } .finder-table { margin:0; min-width:760px; color:var(--ink); }
+    .finder-table thead { background:#f1e5d9; } .finder-table>thead>tr>th { border-bottom:2px solid #cbb9a8; } .finder-table>tbody>tr>td,.finder-table>thead>tr>th { border-color:var(--line); padding:12px; vertical-align:middle; }
+    .finder-empty { padding:20px; border-style:dashed; color:#6b625a; } .finder-actions { display:flex; gap:7px; flex-wrap:wrap; }
+    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} }
+</style>
+<main class="finder-page"><div class="finder-shell">
+    <aside class="finder-sidebar" aria-label="Employer navigation"><h2>Job Finder</h2><ul class="finder-nav">
+        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "Employer")</li><li>@Html.ActionLink("Post Job", "PostJob_Pageload", "Employer")</li>
+        <li>@Html.ActionLink("Manage Jobs", "ManageJobs_Pageload", "Employer", null, new { @class="active", aria_current="page" })</li><li>@Html.ActionLink("Profile", "Profile_Pageload", "Employer")</li>
+    </ul>
+    @using (Html.BeginForm("Logout", "Employer", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="finder-logout">Logout</button>
+    }
+    </aside>
+    <section class="finder-content"><h1>Manage Jobs</h1>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        <p>@Html.ActionLink("Post a Job", "PostJob_Pageload", "Employer", null, new { @class="finder-button" })</p>
+        @if (Model == null || !Model.Any())
+        {
+            <div class="finder-empty">You have not posted any jobs yet. Use “Post a Job” to create your first listing.</div>
+        }
+        else
+        {
+            <div class="finder-table-wrap"><table class="table table-striped finder-table">
+                <thead><tr><th>Job ID</th><th>Title</th><th>Job Type</th><th>Location</th><th>Experience</th><th>Salary</th><th>Actions</th></tr></thead>
+                <tbody>
+                @foreach (var job in Model)
+                {
+                    <tr>
+                        <td>@job.JobId</td><td>@job.JobTitle</td><td>@job.JobType</td><td>@job.Location</td><td>@job.ExperienceRequired</td><td>@job.SalaryRange</td>
+                        <td><div class="finder-actions">
+                            @Html.ActionLink("Edit", "EditJob_Pageload", "Employer", new { id = job.JobId }, new { @class="btn btn-default btn-sm" })
+                            @using (Html.BeginForm("DeleteJob", "Employer", new { id = job.JobId }, FormMethod.Post, new { onsubmit="return confirm('Delete this job listing?');" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            }
+                        </div></td>
+                    </tr>
+                }
+                </tbody>
+            </table></div>
+        }
+    </section>
+</div></main>
+

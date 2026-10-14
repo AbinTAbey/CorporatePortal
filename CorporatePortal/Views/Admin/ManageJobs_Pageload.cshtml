@@ -1,0 +1,65 @@
+﻿
+@model IEnumerable<CorporatePortal.Models.Job>
+@using System.Linq
+@{
+    ViewBag.Title = "Manage Jobs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .admin-page { --cream: #fbf5ed; --coral: #e87562; --ink: #292521; --line: #ded3c7; color: var(--ink); background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 18px 0; }
+    .admin-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; }
+    .admin-sidebar { background: #fffdf9; border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+    .admin-sidebar h2 { font-size: 18px; margin: 2px 0 16px; }
+    .admin-nav { list-style: none; padding: 0; margin: 0; }
+    .admin-nav li { margin: 5px 0; }
+    .admin-nav a, .admin-logout { display: block; padding: 10px 12px; border-radius: 7px; color: var(--ink); text-decoration: none; }
+    .admin-nav a:hover, .admin-nav a.active { background: #f5e7db; text-decoration: none; }
+    .admin-logout { width: 100%; border: 0; background: var(--coral); color: #fff; text-align: left; margin-top: 6px; }
+    .admin-content { min-width: 0; }
+    .admin-content h1 { margin: 5px 0 18px; font-weight: 700; }
+    .admin-button { display: inline-block; background: var(--coral); color: #fff; border-radius: 6px; padding: 9px 13px; text-decoration: none; margin-bottom: 17px; }
+    .admin-table-wrap { overflow-x: auto; background: #fffdf9; border: 1px solid var(--line); border-radius: 9px; }
+    .admin-table { margin: 0; min-width: 760px; color: var(--ink); }
+    .admin-table thead { background: #f1e5d9; }
+    .admin-table > thead > tr > th { border-bottom: 2px solid #cbb9a8; }
+    .admin-table > tbody > tr > td, .admin-table > thead > tr > th { border-color: var(--line); padding: 12px; vertical-align: middle; }
+    .admin-empty { background: #fffdf9; border: 1px dashed #cbb9a8; border-radius: 8px; padding: 20px; color: #6b625a; }
+    @@media (max-width: 767px) { .admin-page { padding: 15px; } .admin-shell { grid-template-columns: 1fr; gap: 16px; } }
+</style>
+<main class="admin-page"><div class="admin-shell">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+        <h2>Job Finder Admin</h2><ul class="admin-nav">
+            <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "Admin")</li>
+            <li>@Html.ActionLink("Manage Job Seekers", "ManageJobseekers_Pageload", "Admin")</li>
+            <li>@Html.ActionLink("Manage Employers", "ManageEmployers_Pageload", "Admin")</li>
+            <li>@Html.ActionLink("Manage Jobs", "ManageJobs_Pageload", "Admin", null, new { @class = "active", aria_current = "page" })</li>
+        </ul>
+        @using (Html.BeginForm("Logout", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="admin-logout">Logout</button>
+        }
+    </aside>
+    <section class="admin-content"><h1>Manage Jobs</h1>
+        @Html.ActionLink("Back to Dashboard", "Dashboard_Pageload", "Admin", null, new { @class = "admin-button" })
+        @if (Model == null || !Model.Any())
+        {
+            <div class="admin-empty">There are no jobs to display yet.</div>
+        }
+        else
+        {
+            <div class="admin-table-wrap">
+                <table class="table table-striped admin-table">
+                    <thead><tr><th scope="col">Job ID</th><th scope="col">Job Title</th><th scope="col">Job Type</th><th scope="col">Location</th><th scope="col">Experience Required</th><th scope="col">Salary Range</th></tr></thead>
+                    <tbody>
+                    @foreach (var job in Model)
+                    {
+                        <tr><td>@job.JobId</td><td>@job.JobTitle</td><td>@job.JobType</td><td>@job.Location</td><td>@job.ExperienceRequired</td><td>@job.SalaryRange</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div></main>
+

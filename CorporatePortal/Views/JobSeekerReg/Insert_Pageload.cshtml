@@ -1,0 +1,96 @@
+
+@model CorporatePortal.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Job Seeker Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="max-width: 600px; margin: 40px auto;">
+    <h2 class="text-center">Job Seeker Registration</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+        <p class="text-muted">Redirecting to Login in 3 seconds...</p>
+        <script>
+            window.setTimeout(function () {
+                window.location.href = '@Url.Action("Login_Pageload", "Login")';
+            }, 3000);
+        </script>
+    }
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <hr />
+
+    @using (Html.BeginForm(
+        "Insert_Pageload",
+        "JobSeekerReg",
+        FormMethod.Post,
+        new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name,
+                new { @class = "form-control", placeholder = "Enter full name" })
+            @Html.ValidationMessageFor(m => m.Name, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email,
+                new { @class = "form-control", placeholder = "Enter email" })
+            @Html.ValidationMessageFor(m => m.Email, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Phone)
+            @Html.TextBoxFor(m => m.Phone,
+                new { @class = "form-control", placeholder = "Enter phone number" })
+            @Html.ValidationMessageFor(m => m.Phone, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username,
+                new { @class = "form-control", placeholder = "Choose username" })
+            @Html.ValidationMessageFor(m => m.Username, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password,
+                new { @class = "form-control", placeholder = "Create password" })
+            @Html.ValidationMessageFor(m => m.Password, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword,
+                new { @class = "form-control", placeholder = "Confirm password" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "",
+                new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="ResumeFile">Upload Resume (PDF/DOC/DOCX)</label>
+            <input type="file" name="ResumeFile" id="ResumeFile"
+                   class="form-control" accept=".pdf,.doc,.docx" />
+            @Html.ValidationMessage("ResumeFile", "",
+                new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+            Register
+        </button>
+    }
+</div>

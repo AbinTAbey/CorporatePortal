@@ -1,0 +1,46 @@
+﻿
+@model CorporatePortal.Models.JobFormViewModel
+@{
+    ViewBag.Title = "Edit Job";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
+    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-panel { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
+    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
+    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
+    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; } .finder-button:hover,.finder-logout:hover { background:#d85f4d; color:#fff; }
+    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 18px; font-weight:700; } .finder-panel { padding:22px; }
+    .finder-form .form-control { max-width:none; min-height:42px; border-color:#cbb9a8; border-radius:7px; box-shadow:none; } .finder-form textarea.form-control { min-height:120px; }
+    .finder-form label { font-weight:600; } .finder-validation { color:#a83227; } .finder-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} .finder-panel{padding:16px;} }
+</style>
+<main class="finder-page"><div class="finder-shell">
+    <aside class="finder-sidebar" aria-label="Employer navigation"><h2>Job Finder</h2><ul class="finder-nav">
+        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "Employer")</li><li>@Html.ActionLink("Post Job", "PostJob_Pageload", "Employer")</li>
+        <li>@Html.ActionLink("Manage Jobs", "ManageJobs_Pageload", "Employer", null, new { @class="active", aria_current="page" })</li><li>@Html.ActionLink("Profile", "Profile_Pageload", "Employer")</li>
+    </ul>
+    @using (Html.BeginForm("Logout", "Employer", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="finder-logout">Logout</button>
+    }
+    </aside>
+    <section class="finder-content"><h1>Edit Job</h1><div class="finder-panel">
+        @using (Html.BeginForm("EditJob_Pageload", "Employer", FormMethod.Post, new { @class="finder-form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.JobId)
+            @Html.ValidationSummary(false, "Please correct the errors below.", new { @class="finder-validation" })
+            <div class="form-group">@Html.LabelFor(m => m.JobTitle, "Job Title")@Html.TextBoxFor(m => m.JobTitle, new { @class="form-control" })@Html.ValidationMessageFor(m => m.JobTitle, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.JobType, "Job Type")@Html.TextBoxFor(m => m.JobType, new { @class="form-control" })@Html.ValidationMessageFor(m => m.JobType, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.ExperienceRequired, "Experience Required")@Html.TextBoxFor(m => m.ExperienceRequired, new { @class="form-control" })@Html.ValidationMessageFor(m => m.ExperienceRequired, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.Location)@Html.TextBoxFor(m => m.Location, new { @class="form-control" })@Html.ValidationMessageFor(m => m.Location, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.SalaryRange, "Salary Range")@Html.TextBoxFor(m => m.SalaryRange, new { @class="form-control" })@Html.ValidationMessageFor(m => m.SalaryRange, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.RequiredSkills, "Required Skills")@Html.TextAreaFor(m => m.RequiredSkills, new { @class="form-control", rows="3" })@Html.ValidationMessageFor(m => m.RequiredSkills, "", new { @class="finder-validation" })</div>
+            <div class="form-group">@Html.LabelFor(m => m.JobDescription, "Job Description")@Html.TextAreaFor(m => m.JobDescription, new { @class="form-control", rows="5" })@Html.ValidationMessageFor(m => m.JobDescription, "", new { @class="finder-validation" })</div>
+            <div class="finder-actions"><button type="submit" class="finder-button">Save Changes</button>@Html.ActionLink("Cancel", "ManageJobs_Pageload", "Employer", null, new { @class="btn btn-default" })</div>
+        }
+    </div></section>
+</div></main>
+

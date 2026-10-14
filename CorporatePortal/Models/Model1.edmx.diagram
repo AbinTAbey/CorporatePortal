@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b76a6e0cfba049abb02831e68572a5da" Name="Diagram1">
+        <EntityTypeShape EntityType="CorporatePortalModel.CompanyDetail" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorporatePortalModel.Employer" Width="1.5" PointX="0.75" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorporatePortalModel.Job" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorporatePortalModel.Jobseeker" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorporatePortalModel.JobseekerProfile" Width="1.5" PointX="6" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorporatePortalModel.Login" Width="1.5" PointX="6" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="CorporatePortalModel.FK__CompanyDe__Emplo__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="CorporatePortalModel.FK__Jobs__EmployerId__571DF1D5" ManuallyRouted="false" />
+        <AssociationConnector Association="CorporatePortalModel.FK__Login__EmployerI__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="CorporatePortalModel.FK__Jobseeker__Jobse__5EBF139D" ManuallyRouted="false" />
+        <AssociationConnector Association="CorporatePortalModel.FK__Login__Jobseeker__5165187F" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
