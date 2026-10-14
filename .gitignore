@@ -1,0 +1,16 @@
+﻿.vs/
+**/bin/
+**/obj/
+**/packages/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Uploaded resumes
+**/UploadedResumes/
+
+# Local database files and backups
+*.mdf
+*.ldf
+*.bak
