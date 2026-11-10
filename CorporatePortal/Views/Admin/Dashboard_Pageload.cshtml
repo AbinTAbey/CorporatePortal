@@ -3,28 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    .admin-page { --cream: #fbf5ed; --coral: #e87562; --ink: #292521; --line: #ded3c7; color: var(--ink); background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 18px 0; }
-    .admin-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; }
-    .admin-sidebar { background: #fffdf9; border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
-    .admin-sidebar h2 { font-size: 18px; margin: 2px 0 16px; }
-    .admin-nav { list-style: none; padding: 0; margin: 0; }
-    .admin-nav li { margin: 5px 0; }
-    .admin-nav a, .admin-logout { display: block; padding: 10px 12px; border-radius: 7px; color: var(--ink); text-decoration: none; }
-    .admin-nav a:hover, .admin-nav a.active { background: #f5e7db; text-decoration: none; }
-    .admin-logout { width: 100%; border: 0; background: var(--coral); color: #fff; text-align: left; margin-top: 6px; }
-    .admin-logout:hover, .admin-button:hover { background: #d85f4d; color: #fff; text-decoration: none; }
-    .admin-content { min-width: 0; }
-    .admin-content h1 { margin-top: 5px; font-weight: 700; }
-    .admin-muted { color: #6b625a; }
-    .admin-quick-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
-    .admin-card { display: block; height: 100%; padding: 20px; background: #fffdf9; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); text-decoration: none; }
-    .admin-card:hover { border-color: var(--coral); text-decoration: none; color: var(--ink); box-shadow: 0 4px 14px rgba(41,37,33,.07); }
-    .admin-card h2 { font-size: 19px; margin: 0 0 9px; }
-    .admin-button { display: inline-block; background: var(--coral); color: #fff; border-radius: 6px; padding: 10px 14px; text-decoration: none; }
-    @@media (max-width: 767px) { .admin-page { padding: 15px; } .admin-shell { grid-template-columns: 1fr; gap: 16px; } .admin-quick-links { grid-template-columns: 1fr; } }
-</style>
-
 <main class="admin-page">
     <div class="admin-shell">
         <aside class="admin-sidebar" aria-label="Admin navigation">

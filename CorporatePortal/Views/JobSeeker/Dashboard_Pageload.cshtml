@@ -1,33 +1,39 @@
 @{
-    ViewBag.Title = "Job Seeker Dashboard";
+    ViewBag.Title = "My Career";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
-    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-card { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
-    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
-    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
-    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; } .finder-button:hover,.finder-logout:hover { background:#d85f4d; color:#fff; }
-    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 12px; font-weight:700; } .finder-muted { color:#6b625a; }
-    .finder-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:26px; } .finder-card { display:block; padding:20px; color:var(--ink); text-decoration:none; }
-    .finder-card:hover { border-color:var(--coral); color:var(--ink); text-decoration:none; box-shadow:0 4px 14px rgba(41,37,33,.07); } .finder-card h2 { font-size:19px; margin:0 0 8px; }
-    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} .finder-links{grid-template-columns:1fr;} }
-</style>
-<main class="finder-page"><div class="finder-shell">
-    <aside class="finder-sidebar" aria-label="Job Seeker navigation"><h2>Job Finder</h2><ul class="finder-nav">
-        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "JobSeeker", null, new { @class="active", aria_current="page" })</li>
-        <li>@Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")</li><li>@Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")</li>
-    </ul>
-    @using (Html.BeginForm("Logout", "JobSeeker", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="finder-logout">Logout</button>
-    }
-    </aside>
-    <section class="finder-content"><h1>Job Seeker Dashboard</h1><p class="finder-muted">Find opportunities and keep your profile ready for employers.</p>
-        <div class="finder-links">
-            <a class="finder-card" href="@Url.Action("SearchJobs_Pageload", "JobSeeker")"><h2>Search Jobs</h2><span class="finder-muted">Explore listings by title, experience, salary, or location.</span></a>
-            <a class="finder-card" href="@Url.Action("Profile_Pageload", "JobSeeker")"><h2>My Profile</h2><span class="finder-muted">Update your qualifications, skills, and resume.</span></a>
-        </div>
-    </section>
-</div></main>
+
+<main class="page-wrap">
+    <div class="dashboard-shell">
+        <nav class="dashboard-nav" aria-label="Job Seeker workspace">
+            <p class="dashboard-nav-title">My Career</p>
+            @Html.ActionLink("Overview", "Dashboard_Pageload", "JobSeeker", null, new { @class = "active", aria_current = "page" })
+            @Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("My Jobs", "MyJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("My Applications", "MyApplications_Pageload", "JobSeeker")
+            @Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")
+        </nav>
+        <section class="dashboard-main">
+            <div class="dashboard-heading">
+                <div><span class="eyebrow">YOUR CAREER, YOUR WAY</span><h1>A little closer to what’s next.</h1><p>Your profile and the opportunities you’re exploring, in one place.</p></div>
+                @Html.ActionLink("Explore Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "jf-button" })
+            </div>
+            @if (TempData["Success"] != null)
+            {
+                <div class="success-message" role="status">@TempData["Success"]</div>
+            }
+            <div class="dashboard-cards">
+                <article class="dashboard-card"><h2>Find your next role</h2><p>Search listings by title, experience, salary range, and location.</p></article>
+                <article class="dashboard-card"><h2>Keep your profile ready</h2><p>Add your qualifications, skills, experience, and address.</p></article>
+                <article class="dashboard-card"><h2>Share your resume</h2><p>Upload a PDF, DOC, or DOCX resume from your profile.</p></article>
+            </div>
+            <h2 class="dashboard-section-title">Quick links</h2>
+            <div class="dashboard-links">
+                <a class="dashboard-link" href="@Url.Action("SearchJobs_Pageload", "JobSeeker")"><strong>Search current listings</strong><span>Discover roles that fit your experience.</span></a>
+                <a class="dashboard-link" href="@Url.Action("MyApplications_Pageload", "JobSeeker")"><strong>My applications</strong><span>Review your submitted applications and current status.</span></a>
+                <a class="dashboard-link" href="@Url.Action("MyJobs_Pageload", "JobSeeker")"><strong>My jobs</strong><span>See applied, saved, interview, and archived jobs.</span></a>
+                <a class="dashboard-link" href="@Url.Action("Profile_Pageload", "JobSeeker")"><strong>Update your profile</strong><span>Keep your skills and resume up to date.</span></a>
+            </div>
+        </section>
+    </div>
+</main>

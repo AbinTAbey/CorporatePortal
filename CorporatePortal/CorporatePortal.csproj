@@ -177,6 +177,9 @@
     <Compile Include="Models\JobseekerProfileViewModel.cs" />
     <Compile Include="Models\EmployerProfileViewModel.cs" />
     <Compile Include="Models\JobFormViewModel.cs" />
+    <Compile Include="Models\EmployerApplicationViewModel.cs" />
+    <Compile Include="Models\JobseekerApplicationViewModel.cs" />
+    <Compile Include="Models\MyJobsViewModel.cs" />
     <Compile Include="Models\sp_GetEmployerJobs_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -200,6 +203,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\workspace.jpg" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>
@@ -257,6 +261,10 @@
     <Content Include="Views\Employer\ManageJobs_Pageload.cshtml" />
     <Content Include="Views\Employer\EditJob_Pageload.cshtml" />
     <Content Include="Views\Employer\Profile_Pageload.cshtml" />
+    <Content Include="Views\Employer\Applications_Pageload.cshtml" />
+    <Content Include="Views\JobSeeker\MyApplications_Pageload.cshtml" />
+    <Content Include="Views\JobSeeker\MyJobs_Pageload.cshtml" />
+    <Content Include="Database\AddJobseekerJobPreference.sql" />
     <Content Include="Views\Admin\ManageJobseekers_Pageload.cshtml" />
     <Content Include="Views\Admin\ManageEmployers_Pageload.cshtml" />
     <Content Include="Views\Admin\ManageJobs_Pageload.cshtml" />
@@ -298,7 +306,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49457</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49457/</IISUrl>
+          <IISUrl>http://localhost:50000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

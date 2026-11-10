@@ -1,61 +1,47 @@
-﻿
 @model CorporatePortal.Models.JobseekerProfileViewModel
 @{
     ViewBag.Title = "My Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
-    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-panel { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
-    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
-    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
-    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; } .finder-button:hover,.finder-logout:hover { background:#d85f4d; color:#fff; }
-    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 18px; font-weight:700; } .finder-panel { padding:22px; }
-    .finder-form .form-control { max-width:none; min-height:42px; border-color:#cbb9a8; border-radius:7px; box-shadow:none; } .finder-form textarea.form-control { min-height:100px; }
-    .finder-form label { font-weight:600; } .finder-validation { color:#a83227; } .finder-actions { margin-top:18px; }
-    .finder-resume { margin:0 0 12px; color:#6b625a; }
-    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} .finder-panel{padding:16px;} }
-</style>
-<main class="finder-page"><div class="finder-shell">
-    <aside class="finder-sidebar" aria-label="Job Seeker navigation"><h2>Job Finder</h2><ul class="finder-nav">
-        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "JobSeeker")</li><li>@Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")</li>
-        <li>@Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker", null, new { @class="active", aria_current="page" })</li>
-    </ul>
-    @using (Html.BeginForm("Logout", "JobSeeker", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="finder-logout">Logout</button>
-    }
-    </aside>
-    <section class="finder-content"><h1>My Profile</h1>
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success">@TempData["Success"]</div>
-        }
-        <div class="finder-panel">
-            @using (Html.BeginForm("UpdateProfile", "JobSeeker", FormMethod.Post, new { enctype="multipart/form-data", @class="finder-form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(false, "Please correct the errors below.", new { @class="finder-validation" })
-                <div class="form-group"><label>Name</label><p class="form-control-static">@Model.Name</p></div>
-                <div class="form-group"><label>Email</label><p class="form-control-static">@Model.Email</p></div>
-                <div class="form-group"><label>Phone</label><p class="form-control-static">@Model.Phone</p></div>
-                <div class="form-group">@Html.LabelFor(m => m.Qualification)@Html.TextBoxFor(m => m.Qualification, new { @class="form-control" })@Html.ValidationMessageFor(m => m.Qualification, "", new { @class="finder-validation" })</div>
-                <div class="form-group">@Html.LabelFor(m => m.Skills)@Html.TextAreaFor(m => m.Skills, new { @class="form-control", rows="3" })@Html.ValidationMessageFor(m => m.Skills, "", new { @class="finder-validation" })</div>
-                <div class="form-group">@Html.LabelFor(m => m.Experience)@Html.TextAreaFor(m => m.Experience, new { @class="form-control", rows="3" })@Html.ValidationMessageFor(m => m.Experience, "", new { @class="finder-validation" })</div>
-                <div class="form-group">@Html.LabelFor(m => m.Address)@Html.TextAreaFor(m => m.Address, new { @class="form-control", rows="3" })@Html.ValidationMessageFor(m => m.Address, "", new { @class="finder-validation" })</div>
-                <div class="form-group">
-                    @if (!string.IsNullOrWhiteSpace(Model.ResumePath))
-                    {
-                        <p class="finder-resume">Current resume: <a href="@Url.Content(Model.ResumePath)" target="_blank" rel="noopener noreferrer">View uploaded resume</a></p>
-                    }
-                    @Html.LabelFor(m => m.ResumeFile, "Replace Resume (PDF, DOC, or DOCX; up to 5 MB)")
-                    <input type="file" id="ResumeFile" name="ResumeFile" class="form-control" accept=".pdf,.doc,.docx" />
-                    @Html.ValidationMessageFor(m => m.ResumeFile, "", new { @class="finder-validation" })
-                </div>
-                <div class="finder-actions"><button type="submit" class="finder-button">Save Profile</button></div>
-            }
-        </div>
-    </section>
-</div></main>
 
+<main class="page-wrap">
+    <div class="dashboard-shell">
+        <nav class="dashboard-nav" aria-label="Job Seeker workspace">
+            <p class="dashboard-nav-title">My Career</p>
+            @Html.ActionLink("Overview", "Dashboard_Pageload", "JobSeeker")
+            @Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker", null, new { @class = "active", aria_current = "page" })
+        </nav>
+        <section class="dashboard-main">
+            <div class="dashboard-heading"><div><span class="eyebrow">YOUR CAREER, YOUR WAY</span><h1>My Profile</h1><p>Keep your experience and resume ready to share.</p></div></div>
+            @if (TempData["Success"] != null)
+            {
+                <div class="success-message" role="status">@TempData["Success"]</div>
+            }
+            <section class="content-panel">
+                @using (Html.BeginForm("UpdateProfile", "JobSeeker", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "", new { @class = "validation-summary-errors" })
+                    <div class="account-summary"><div><h2>@Model.Name</h2><p>@Model.Email · @Model.Phone</p></div></div>
+                    <div class="form-grid">
+                        <label class="field">@Html.DisplayNameFor(m => m.Qualification)@Html.TextBoxFor(m => m.Qualification, new { @class = "form-control" })@Html.ValidationMessageFor(m => m.Qualification, "", new { @class = "field-validation-error" })</label>
+                        <label class="field">@Html.DisplayNameFor(m => m.Experience)@Html.TextBoxFor(m => m.Experience, new { @class = "form-control", placeholder = "e.g. 3 years" })@Html.ValidationMessageFor(m => m.Experience, "", new { @class = "field-validation-error" })</label>
+                        <label class="field full-width">@Html.DisplayNameFor(m => m.Skills)@Html.TextAreaFor(m => m.Skills, new { @class = "form-control", rows = "3" })@Html.ValidationMessageFor(m => m.Skills, "", new { @class = "field-validation-error" })</label>
+                        <label class="field full-width">@Html.DisplayNameFor(m => m.Address)@Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = "3" })@Html.ValidationMessageFor(m => m.Address, "", new { @class = "field-validation-error" })</label>
+                        <div class="field full-width">
+                            @if (!string.IsNullOrWhiteSpace(Model.ResumePath))
+                            {
+                                <p class="resume-current">Current resume: <a href="@Url.Content(Model.ResumePath)" target="_blank" rel="noopener noreferrer">View uploaded resume</a></p>
+                            }
+                            <label for="ResumeFile">Replace resume (PDF, DOC, or DOCX; up to 5 MB)</label>
+                            <input type="file" id="ResumeFile" name="ResumeFile" class="form-control" accept=".pdf,.doc,.docx" />
+                            @Html.ValidationMessageFor(m => m.ResumeFile, "", new { @class = "field-validation-error" })
+                        </div>
+                    </div>
+                    <div class="form-actions"><button type="submit" class="jf-button">Save Profile</button>@Html.ActionLink("Cancel", "Dashboard_Pageload", "JobSeeker", null, new { @class = "jf-button-outline" })</div>
+                }
+            </section>
+        </section>
+    </div>
+</main>

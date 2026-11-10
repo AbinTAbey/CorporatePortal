@@ -4,10 +4,10 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CorporatePortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CorporatePortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CompanyDetails">
           <Key>
-            <PropertyRef Name="CompanyId" />
+            <PropertyRef Name="EmployerId" />
           </Key>
           <Property Name="CompanyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EmployerId" Type="int" Nullable="false" />
@@ -50,7 +50,7 @@
         </EntityType>
         <EntityType Name="JobseekerProfile">
           <Key>
-            <PropertyRef Name="ProfileId" />
+            <PropertyRef Name="JobseekerId" />
           </Key>
           <Property Name="ProfileId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="JobseekerId" Type="int" Nullable="false" />
@@ -73,7 +73,7 @@
         </EntityType>
         <Association Name="FK__CompanyDe__Emplo__5AEE82B9">
           <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
-          <End Role="CompanyDetails" Type="Self.CompanyDetails" Multiplicity="*" />
+          <End Role="CompanyDetails" Type="Self.CompanyDetails" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Employer">
               <PropertyRef Name="EmployerId" />
@@ -97,7 +97,7 @@
         </Association>
         <Association Name="FK__Jobseeker__Jobse__5EBF139D">
           <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="1" />
-          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="*" />
+          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Jobseeker">
               <PropertyRef Name="JobseekerId" />
@@ -146,6 +146,7 @@
           <Parameter Name="ExperienceRequired" Type="varchar" Mode="In" />
           <Parameter Name="SalaryRange" Type="varchar" Mode="In" />
           <Parameter Name="Location" Type="varchar" Mode="In" />
+          <Parameter Name="Skills" Type="varchar" Mode="In" />
         </Function>
         <Function Name="sp_ManageCompanyDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="EmployerId" Type="int" Mode="In" />
@@ -213,14 +214,13 @@
             <End Role="Login" EntitySet="Login" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CorporatePortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="CompanyDetail">
           <Key>
-            <PropertyRef Name="CompanyId" />
+            <PropertyRef Name="EmployerId" />
           </Key>
           <Property Name="CompanyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EmployerId" Type="Int32" Nullable="false" />
@@ -238,7 +238,7 @@
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="CompanyDetails" Relationship="Self.FK__CompanyDe__Emplo__5AEE82B9" FromRole="Employer" ToRole="CompanyDetails" />
+          <NavigationProperty Name="CompanyDetail" Relationship="Self.FK__CompanyDe__Emplo__5AEE82B9" FromRole="Employer" ToRole="CompanyDetails" />
           <NavigationProperty Name="Jobs" Relationship="Self.FK__Jobs__EmployerId__571DF1D5" FromRole="Employer" ToRole="Jobs" />
           <NavigationProperty Name="Logins" Relationship="Self.FK__Login__EmployerI__52593CB8" FromRole="Employer" ToRole="Login" />
         </EntityType>
@@ -265,12 +265,12 @@
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="JobseekerProfiles" Relationship="Self.FK__Jobseeker__Jobse__5EBF139D" FromRole="Jobseeker" ToRole="JobseekerProfile" />
+          <NavigationProperty Name="JobseekerProfile" Relationship="Self.FK__Jobseeker__Jobse__5EBF139D" FromRole="Jobseeker" ToRole="JobseekerProfile" />
           <NavigationProperty Name="Logins" Relationship="Self.FK__Login__Jobseeker__5165187F" FromRole="Jobseeker" ToRole="Login" />
         </EntityType>
         <EntityType Name="JobseekerProfile">
           <Key>
-            <PropertyRef Name="ProfileId" />
+            <PropertyRef Name="JobseekerId" />
           </Key>
           <Property Name="ProfileId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="JobseekerId" Type="Int32" Nullable="false" />
@@ -296,7 +296,7 @@
         </EntityType>
         <Association Name="FK__CompanyDe__Emplo__5AEE82B9">
           <End Role="Employer" Type="Self.Employer" Multiplicity="1" />
-          <End Role="CompanyDetails" Type="Self.CompanyDetail" Multiplicity="*" />
+          <End Role="CompanyDetails" Type="Self.CompanyDetail" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Employer">
               <PropertyRef Name="EmployerId" />
@@ -332,7 +332,7 @@
         </Association>
         <Association Name="FK__Jobseeker__Jobse__5EBF139D">
           <End Role="Jobseeker" Type="Self.Jobseeker" Multiplicity="1" />
-          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="*" />
+          <End Role="JobseekerProfile" Type="Self.JobseekerProfile" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Jobseeker">
               <PropertyRef Name="JobseekerId" />
@@ -386,16 +386,17 @@
             <Parameter Name="PasswordHash" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_GetEmployerJobs" ReturnType="Collection(CorporatePortalModel.sp_GetEmployerJobs_Result)">
-            <Parameter Name="EmployerId" Mode="In" Type="Int32" />
+          <Parameter Name="EmployerId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_GetJobDetails" ReturnType="Collection(CorporatePortalModel.sp_GetJobDetails_Result)">
-            <Parameter Name="JobId" Mode="In" Type="Int32" />
+          <Parameter Name="JobId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_GetJobs" ReturnType="Collection(CorporatePortalModel.sp_GetJobs_Result)">
             <Parameter Name="JobTitle" Mode="In" Type="String" />
             <Parameter Name="ExperienceRequired" Mode="In" Type="String" />
             <Parameter Name="SalaryRange" Mode="In" Type="String" />
             <Parameter Name="Location" Mode="In" Type="String" />
+            <Parameter Name="Skills" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_ManageCompanyDetails" ReturnType="Collection(String)">
             <Parameter Name="EmployerId" Mode="In" Type="Int32" />
@@ -433,7 +434,7 @@
             <Parameter Name="Role" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_ValidateLogin" ReturnType="Collection(CorporatePortalModel.sp_ValidateLogin_Result)">
-            <Parameter Name="Username" Mode="In" Type="String" />
+          <Parameter Name="Username" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_GetEmployerJobs_Result">

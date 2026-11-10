@@ -1,0 +1,45 @@
+@model IEnumerable<CorporatePortal.Models.JobseekerApplicationViewModel>
+@using System.Linq
+@{
+    ViewBag.Title = "My Applications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="page-wrap">
+    <div class="dashboard-shell">
+        <nav class="dashboard-nav" aria-label="Job Seeker workspace">
+            <p class="dashboard-nav-title">My Career</p>
+            @Html.ActionLink("Overview", "Dashboard_Pageload", "JobSeeker")
+            @Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("My Jobs", "MyJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("My Applications", "MyApplications_Pageload", "JobSeeker", null, new { @class = "active", aria_current = "page" })
+            @Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")
+        </nav>
+        <section class="dashboard-main">
+            <div class="dashboard-heading"><div><span class="eyebrow">YOUR CAREER, YOUR WAY</span><h1>My Applications</h1><p>Track applications you have submitted.</p></div></div>
+            @if (Model == null || !Model.Any())
+            {
+                <div class="empty-state"><h3>No applications yet</h3><p>Your applications will appear here after you apply for a job.</p>@Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "jf-button" })</div>
+            }
+            else
+            {
+                <div class="table-wrap applications-table-wrap">
+                    <table class="applications-table">
+                        <thead><tr><th>Job</th><th>Company</th><th>Applied</th><th>Status</th></tr></thead>
+                        <tbody>
+                        @foreach (var application in Model)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(application.JobTitle, "JobDetails_Pageload", "JobSeeker", new { id = application.JobId }, null)</td>
+                                <td>@application.CompanyName</td>
+                                <td>@application.AppliedDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="application-status">@application.Status</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+    </div>
+</main>

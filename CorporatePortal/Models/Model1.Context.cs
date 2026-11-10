@@ -65,7 +65,7 @@ namespace CorporatePortal.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetJobDetails_Result>("sp_GetJobDetails", jobIdParameter);
         }
     
-        public virtual ObjectResult<sp_GetJobs_Result> sp_GetJobs(string jobTitle, string experienceRequired, string salaryRange, string location)
+        public virtual ObjectResult<sp_GetJobs_Result> sp_GetJobs(string jobTitle, string experienceRequired, string salaryRange, string location, string skills)
         {
             var jobTitleParameter = jobTitle != null ?
                 new ObjectParameter("JobTitle", jobTitle) :
@@ -83,7 +83,11 @@ namespace CorporatePortal.Models
                 new ObjectParameter("Location", location) :
                 new ObjectParameter("Location", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetJobs_Result>("sp_GetJobs", jobTitleParameter, experienceRequiredParameter, salaryRangeParameter, locationParameter);
+            var skillsParameter = skills != null ?
+                new ObjectParameter("Skills", skills) :
+                new ObjectParameter("Skills", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetJobs_Result>("sp_GetJobs", jobTitleParameter, experienceRequiredParameter, salaryRangeParameter, locationParameter, skillsParameter);
         }
     
         public virtual ObjectResult<string> sp_ManageCompanyDetails(Nullable<int> employerId, string companyName, string website, string address, string description)

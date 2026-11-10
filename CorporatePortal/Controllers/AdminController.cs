@@ -1,6 +1,8 @@
 using System.Linq;
 using System;
 using System.IO;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 using CorporatePortal.Infrastructure;
 using CorporatePortal.Models;
@@ -27,6 +29,45 @@ namespace CorporatePortal.Controllers
             using (var db = new CorporatePortalEntities()) return View(db.Jobs.OrderBy(x => x.JobTitle).ToList());
         }
 
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult DeleteJob(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["Error"] = "The job could not be deleted. The ID is invalid.";
+                return RedirectToAction("ManageJobs_Pageload");
+            }
+
+            try
+            {
+                using (var db = new CorporatePortalEntities())
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    var job = db.Jobs.SingleOrDefault(item => item.JobId == id);
+                    if (job == null)
+                    {
+                        TempData["Error"] = "The job was not found.";
+                        return RedirectToAction("ManageJobs_Pageload");
+                    }
+
+                    db.Database.ExecuteSqlCommand(
+                        "DELETE FROM dbo.JobApplication WHERE JobId = @JobId",
+                        new SqlParameter("@JobId", SqlDbType.Int) { Value = id });
+                    db.Jobs.Remove(job);
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+
+                TempData["Success"] = "The job and its applications were deleted.";
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "The job could not be deleted because a database operation failed.";
+            }
+
+            return RedirectToAction("ManageJobs_Pageload");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteJobseeker(int id)
@@ -50,6 +91,9 @@ namespace CorporatePortal.Controllers
                         return RedirectToAction("ManageJobseekers_Pageload");
                     }
 
+                    db.Database.ExecuteSqlCommand(
+                        "DELETE FROM dbo.JobApplication WHERE JobseekerId = @JobseekerId",
+                        new SqlParameter("@JobseekerId", SqlDbType.Int) { Value = id });
                     var profiles = db.JobseekerProfiles.Where(x => x.JobseekerId == id).ToList();
                     var logins = db.Logins.Where(x => x.JobseekerId == id).ToList();
                     resumePaths.AddRange(profiles.Select(x => x.ResumePath).Where(x => !string.IsNullOrWhiteSpace(x)));
@@ -100,6 +144,9 @@ namespace CorporatePortal.Controllers
                     var companyDetails = db.CompanyDetails.Where(x => x.EmployerId == id).ToList();
                     var jobs = db.Jobs.Where(x => x.EmployerId == id).ToList();
 
+                    db.Database.ExecuteSqlCommand(
+                        "DELETE FROM dbo.JobApplication WHERE JobId IN (SELECT JobId FROM dbo.Jobs WHERE EmployerId = @EmployerId)",
+                        new SqlParameter("@EmployerId", SqlDbType.Int) { Value = id });
                     db.Logins.RemoveRange(logins);
                     db.CompanyDetails.RemoveRange(companyDetails);
                     db.Jobs.RemoveRange(jobs);

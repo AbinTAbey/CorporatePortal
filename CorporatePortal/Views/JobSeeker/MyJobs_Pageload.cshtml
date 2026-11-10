@@ -1,0 +1,125 @@
+@model CorporatePortal.Models.MyJobsViewModel
+@using System.Linq
+@{
+    ViewBag.Title = "My Jobs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var jobs = Model == null || Model.Jobs == null ? Enumerable.Empty<CorporatePortal.Models.MyJobItemViewModel>() : Model.Jobs;
+    var visibleJobs = Model.ActiveTab == "Saved"
+        ? jobs.Where(job => job.IsSaved && !job.IsArchived)
+        : Model.ActiveTab == "Interview"
+            ? jobs.Where(job => job.IsApplied && !job.IsArchived && string.Equals(job.Status, "Interview", System.StringComparison.OrdinalIgnoreCase))
+            : Model.ActiveTab == "Archived"
+                ? jobs.Where(job => job.IsArchived)
+                : jobs.Where(job => job.IsApplied && !job.IsArchived);
+    var entryCount = visibleJobs.Count();
+    var emptyMessage = Model.ActiveTab == "Saved" ? "Jobs you save will be collected here for later." :
+        Model.ActiveTab == "Interview" ? "Applications move here when an employer marks them for interview." :
+        Model.ActiveTab == "Archived" ? "Jobs you archive will stay here until you restore them." :
+        "Jobs you have applied for will appear here with their current status.";
+}
+
+<main class="page-wrap">
+    <div class="dashboard-shell">
+        <nav class="dashboard-nav" aria-label="Job Seeker workspace">
+            <p class="dashboard-nav-title">My Career</p>
+            @Html.ActionLink("Overview", "Dashboard_Pageload", "JobSeeker")
+            @Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker")
+            @Html.ActionLink("My Jobs", "MyJobs_Pageload", "JobSeeker", null, new { @class = "active", aria_current = "page" })
+            @Html.ActionLink("My Applications", "MyApplications_Pageload", "JobSeeker")
+            @Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")
+        </nav>
+
+        <section class="dashboard-main">
+            <div class="dashboard-heading">
+                <div><span class="eyebrow">YOUR CAREER, YOUR WAY</span><h1>My Jobs</h1><p>Keep track of the jobs you applied to, saved, or archived.</p></div>
+                @Html.ActionLink("Find Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "jf-button" })
+            </div>
+
+            @if (TempData["JobStateMessage"] != null) { <div class="success-message" role="status">@TempData["JobStateMessage"]</div> }
+            @if (TempData["JobStateError"] != null) { <div class="alert alert-danger" role="alert">@TempData["JobStateError"]</div> }
+
+            <nav class="my-jobs-tabs" aria-label="My Jobs sections">
+                @Html.ActionLink("Applied " + Model.AppliedCount, "MyJobs_Pageload", "JobSeeker", new { tab = "Applied" }, new { @class = Model.ActiveTab == "Applied" ? "active" : null, aria_current = Model.ActiveTab == "Applied" ? "page" : null })
+                @Html.ActionLink("Saved " + Model.SavedCount, "MyJobs_Pageload", "JobSeeker", new { tab = "Saved" }, new { @class = Model.ActiveTab == "Saved" ? "active" : null, aria_current = Model.ActiveTab == "Saved" ? "page" : null })
+                @Html.ActionLink("Interview " + Model.InterviewCount, "MyJobs_Pageload", "JobSeeker", new { tab = "Interview" }, new { @class = Model.ActiveTab == "Interview" ? "active" : null, aria_current = Model.ActiveTab == "Interview" ? "page" : null })
+                @Html.ActionLink("Archived " + Model.ArchivedCount, "MyJobs_Pageload", "JobSeeker", new { tab = "Archived" }, new { @class = Model.ActiveTab == "Archived" ? "active" : null, aria_current = Model.ActiveTab == "Archived" ? "page" : null })
+            </nav>
+
+            @if (!visibleJobs.Any())
+            {
+                <div class="empty-state"><h3>Nothing here yet</h3><p>@emptyMessage</p>@Html.ActionLink("Explore jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "jf-button-outline" })</div>
+            }
+            else
+            {
+                <div class="my-jobs-list">
+                    @foreach (var job in visibleJobs)
+                    {
+                        <article class="my-job-card">
+                            <div class="my-job-heading">
+                                <div><span class="eyebrow">@(string.IsNullOrWhiteSpace(job.CompanyName) ? "COMPANY" : job.CompanyName)</span><h2>@job.JobTitle</h2></div>
+                                @if (job.IsApplied)
+                                {
+                                    <span class="application-status">@(string.IsNullOrWhiteSpace(job.Status) ? "Status unavailable" : job.Status)</span>
+                                }
+                            </div>
+                            <div class="my-job-meta">
+                                @if (!string.IsNullOrWhiteSpace(job.Location)) { <span>@job.Location</span> }
+                                @if (!string.IsNullOrWhiteSpace(job.JobType)) { <span>@job.JobType</span> }
+                                @if (!string.IsNullOrWhiteSpace(job.SalaryRange)) { <span>@job.SalaryRange</span> }
+                                @if (job.AppliedDate.HasValue) { <span>Applied @job.AppliedDate.Value.ToString("dd MMM yyyy")</span> }
+                            </div>
+                            <div class="my-job-actions">
+                                @Html.ActionLink("View Job Details", "JobDetails_Pageload", "JobSeeker", new { id = job.JobId }, new { @class = "jf-button-outline" })
+                                @if (Model.ActiveTab == "Saved" && job.IsApplied)
+                                {
+                                    <span class="application-status application-status-applied" role="status">Already Applied</span>
+                                }
+                                else if (Model.ActiveTab == "Saved" && !job.IsApplied)
+                                {
+                                    using (Html.BeginForm("ApplyForJob", "JobSeeker", new { id = job.JobId }, FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="jf-button">Apply Now</button>
+                                    }
+                                }
+                                @if (job.IsSaved && Model.ActiveTab == "Saved")
+                                {
+                                    using (Html.BeginForm("RemoveSavedJob", "JobSeeker", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("id", job.JobId)
+                                        @Html.Hidden("source", "MyJobs")
+                                        @Html.Hidden("tab", Model.ActiveTab)
+                                        <button type="submit" class="jf-button-outline">Remove from Saved</button>
+                                    }
+                                }
+                                @if (Model.ActiveTab == "Archived")
+                                {
+                                    using (Html.BeginForm("RestoreJob", "JobSeeker", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("id", job.JobId)
+                                        @Html.Hidden("source", "MyJobs")
+                                        @Html.Hidden("tab", Model.ActiveTab)
+                                        <button type="submit" class="jf-button">Restore</button>
+                                    }
+                                }
+                                else
+                                {
+                                    using (Html.BeginForm("ArchiveJob", "JobSeeker", FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("id", job.JobId)
+                                        @Html.Hidden("source", "MyJobs")
+                                        @Html.Hidden("tab", Model.ActiveTab)
+                                        <button type="submit" class="jf-button-outline">Archive</button>
+                                    }
+                                }
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+</main>

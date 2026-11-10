@@ -1,31 +1,61 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+@{
+    ViewBag.Title = "Find your next opportunity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<main class="page-wrap">
+    <section class="browse-intro">
+        <div>
+            <span class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span>
+            <h1>Find work that <span>works for you.</span></h1>
+            <p class="intro-copy">Discover opportunities, meet great teams, and take your next step.</p>
+        </div>
+        <div class="intro-side">
+            <strong>A more thoughtful job search.</strong>
+            <p>Explore roles that match your experience and make your next move with confidence.</p>
+        </div>
+    </section>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    @using (Html.BeginForm("SearchJobs_Pageload", "JobSeeker", FormMethod.Get, new { @class = "search-bar", role = "search" }))
+    {
+        <label class="search-field" for="home-job-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            @Html.TextBox("jobTitle", null, new { id = "home-job-title", placeholder = "Job title, keyword, or company", aria_label = "Job title, keyword, or company" })
+        </label>
+        <label class="search-field" for="home-job-location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            @Html.TextBox("location", null, new { id = "home-job-location", placeholder = "City, region, or anywhere", aria_label = "Location" })
+        </label>
+        <button type="submit" class="jf-button">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            Search Jobs
+        </button>
+    }
+
+    <div class="popular-searches">
+        <span>Popular searches:</span>
+        @Html.ActionLink("Product Designer", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Product Designer" }, null)
+        @Html.ActionLink("Frontend Engineer", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Frontend Engineer" }, null)
+        @Html.ActionLink("Marketing", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Marketing" }, null)
+        @Html.ActionLink("Remote", "SearchJobs_Pageload", "JobSeeker", new { location = "Remote" }, null)
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+    <section class="home-opportunities">
+        <div class="results-header">
+            <div><span class="eyebrow">A GOOD PLACE TO BEGIN</span><h2>Explore opportunities</h2></div>
+            @Html.ActionLink("Sign in to find jobs", "Login_Pageload", "Login", null, new { @class = "jf-button-outline" })
+        </div>
+        <div class="home-empty-row">
+            <div class="home-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>
+            </div>
+            <div><h3>Start with a search that fits you.</h3><p>Sign in as a Job Seeker to browse current listings and narrow them by experience, salary, and location.</p></div>
+            @Html.ActionLink("Create a Job Seeker account", "Insert_Pageload", "JobSeekerReg", null, new { @class = "jf-button" })
+        </div>
+    </section>
+
+    <section class="home-career">
+        <img src="@Url.Content("~/Content/workspace.jpg")" alt="A calm, bright workspace" loading="lazy" />
+        <div><span class="eyebrow">YOUR NEXT CHAPTER</span><h2>Give your experience a place to shine.</h2><p>Create your Job Seeker account to keep your profile and resume ready as you explore opportunities.</p>@Html.ActionLink("Get started", "Insert_Pageload", "JobSeekerReg", null, new { @class = "jf-button" })</div>
+    </section>
+</main>

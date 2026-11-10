@@ -7,27 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace CorporatePortal.Models
 {
-    using System;
-    using System.Collections.Generic;
-    
     public partial class Jobseeker
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Jobseeker()
         {
-            this.JobseekerProfiles = new HashSet<JobseekerProfile>();
             this.Logins = new HashSet<Login>();
         }
-    
+
         public int JobseekerId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<JobseekerProfile> JobseekerProfiles { get; set; }
+
+        public virtual JobseekerProfile JobseekerProfile { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Login> Logins { get; set; }
     }

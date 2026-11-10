@@ -1,52 +1,106 @@
-﻿
 @model CorporatePortal.Models.sp_GetJobDetails_Result
 @{
     ViewBag.Title = "Job Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var companyName = string.IsNullOrWhiteSpace(Model.CompanyName) ? "Company" : Model.CompanyName.Trim();
 }
-<style>
-    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
-    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-panel { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
-    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
-    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
-    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; }
-    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 8px; font-weight:700; } .finder-subtitle { color:#6b625a; margin-bottom:20px; }
-    .finder-panel { padding:22px; } .finder-details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin:0; }
-    .finder-details div { border-bottom:1px solid var(--line); padding-bottom:12px; } .finder-details .wide { grid-column:1 / -1; }
-    .finder-details dt { color:#6b625a; font-size:13px; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; } .finder-details dd { margin:0; white-space:pre-line; }
-    .finder-actions { margin-top:22px; } .finder-button:hover { background:#d85f4d; color:#fff; text-decoration:none; }
-    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} .finder-details{grid-template-columns:1fr;} .finder-details .wide{grid-column:auto;} .finder-panel{padding:16px;} }
-</style>
-<main class="finder-page"><div class="finder-shell">
-    <aside class="finder-sidebar" aria-label="Job Seeker navigation"><h2>Job Finder</h2><ul class="finder-nav">
-        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "JobSeeker")</li><li>@Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class="active", aria_current="page" })</li>
-        <li>@Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")</li>
-    </ul>
-    @using (Html.BeginForm("Logout", "JobSeeker", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="finder-logout">Logout</button>
-    }
-    </aside>
-    <section class="finder-content"><h1>@Model.JobTitle</h1><p class="finder-subtitle">@Model.CompanyName</p>
-        <div class="finder-panel"><dl class="finder-details">
-            <div><dt>Company</dt><dd>@Model.CompanyName</dd></div><div><dt>Job Type</dt><dd>@Model.JobType</dd></div>
-            <div><dt>Location</dt><dd>@Model.Location</dd></div><div><dt>Experience Required</dt><dd>@Model.ExperienceRequired</dd></div>
-            <div><dt>Salary Range</dt><dd>@Model.SalaryRange</dd></div><div><dt>Required Skills</dt><dd>@Model.RequiredSkills</dd></div>
-            <div class="wide"><dt>Job Description</dt><dd>@Model.JobDescription</dd></div>
-            @if (!string.IsNullOrWhiteSpace(Model.Website))
+
+<main class="page-wrap">
+    @Html.ActionLink("← All opportunities", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "detail-back" })
+    <div class="detail-layout">
+        <article class="content-panel detail-main">
+            <div class="detail-company"><div class="company-logo" aria-hidden="true">@companyName.Substring(0, 1).ToUpperInvariant()</div><strong>@companyName</strong></div>
+            <h1>@Model.JobTitle</h1>
+            <div class="job-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                @Model.Location
+            </div>
+            <div class="job-tags">
+                @if (!string.IsNullOrWhiteSpace(Model.JobType)) { <span class="category-tag">@Model.JobType</span> }
+                @if (!string.IsNullOrWhiteSpace(Model.ExperienceRequired)) { <span>@Model.ExperienceRequired</span> }
+            </div>
+            <h2>About the role</h2><p>@Model.JobDescription</p>
+            <h2>Required skills</h2><p>@Model.RequiredSkills</p>
+            @if (!string.IsNullOrWhiteSpace(Model.CompanyDescription))
             {
-                <div><dt>Company Website</dt><dd>@Model.Website</dd></div>
+                <h2>About @companyName</h2><p>@Model.CompanyDescription</p>
             }
             @if (!string.IsNullOrWhiteSpace(Model.CompanyAddress))
             {
-                <div><dt>Company Address</dt><dd>@Model.CompanyAddress</dd></div>
+                <h2>Company location</h2><p>@Model.CompanyAddress</p>
             }
-            @if (!string.IsNullOrWhiteSpace(Model.CompanyDescription))
+        </article>
+        <aside class="content-panel detail-sidebar">
+            <h2>The opportunity</h2>
+            <div class="detail-stat"><span>Salary range</span><strong>@Model.SalaryRange</strong></div>
+            <div class="detail-stat"><span>Job mode</span><strong>@Model.JobType</strong></div>
+            <div class="detail-stat"><span>Experience</span><strong>@Model.ExperienceRequired</strong></div>
+            @if (!string.IsNullOrWhiteSpace(Model.Website))
             {
-                <div class="wide"><dt>About the Company</dt><dd>@Model.CompanyDescription</dd></div>
+                <div class="detail-stat"><span>Company website</span><strong>@Model.Website</strong></div>
             }
-        </dl><div class="finder-actions">@Html.ActionLink("Back to Search", "SearchJobs_Pageload", "JobSeeker", null, new { @class="finder-button" })</div></div>
-    </section>
-</div></main>
-
+            <p class="resume-note">Use Apply Now to send your application for this opportunity.</p>
+            @if (TempData["ApplicationSuccess"] != null)
+            {
+                <div class="success-message" role="status">@TempData["ApplicationSuccess"]</div>
+            }
+            @if (TempData["ApplicationError"] != null)
+            {
+                <div class="alert alert-danger" role="alert">@TempData["ApplicationError"]</div>
+            }
+            @if (TempData["JobStateMessage"] != null)
+            {
+                <div class="success-message" role="status">@TempData["JobStateMessage"]</div>
+            }
+            @if (TempData["JobStateError"] != null)
+            {
+                <div class="alert alert-danger" role="alert">@TempData["JobStateError"]</div>
+            }
+            @if (ViewBag.IsArchived == true)
+            {
+                <div class="application-status">Archived in My Jobs</div>
+                using (Html.BeginForm("RestoreJob", "JobSeeker", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.JobId)
+                    @Html.Hidden("source", "Details")
+                    <button type="submit" class="jf-button-outline">Restore to My Jobs</button>
+                }
+            }
+            @if (ViewBag.IsSaved == true)
+            {
+                using (Html.BeginForm("RemoveSavedJob", "JobSeeker", FormMethod.Post, new { @class = "job-save-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.JobId)
+                    @Html.Hidden("source", "Details")
+                    <button type="submit" class="jf-button-outline">Remove from Saved</button>
+                }
+            }
+            else if (ViewBag.IsArchived != true)
+            {
+                using (Html.BeginForm("SaveJob", "JobSeeker", FormMethod.Post, new { @class = "job-save-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.JobId)
+                    @Html.Hidden("source", "Details")
+                    <button type="submit" class="jf-button-outline">Save Job</button>
+                }
+            }
+            @if (ViewBag.HasApplied == true)
+            {
+                <div class="application-status application-status-applied" role="status">Already Applied</div>
+            }
+            else
+            {
+                using (Html.BeginForm("ApplyForJob", "JobSeeker", new { id = Model.JobId }, FormMethod.Post, new { @class = "apply-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <label for="cover-letter">Cover letter <span>(optional)</span></label>
+                    <textarea id="cover-letter" name="coverLetter" rows="5" maxlength="2000" placeholder="Add a short note for the employer"></textarea>
+                    <button type="submit" class="jf-button apply-button">Apply Now</button>
+                }
+            }
+        </aside>
+    </div>
+</main>

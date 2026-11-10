@@ -1,42 +1,126 @@
-﻿<!DOCTYPE html>
-<html>
+@{
+    var role = Session["Role"] as string;
+    var authenticated = Session["LoginId"] != null && !string.IsNullOrWhiteSpace(role);
+    var currentController = Convert.ToString(ViewContext.RouteData.Values["controller"]);
+    var currentAction = Convert.ToString(ViewContext.RouteData.Values["action"]);
+    var logoutController = role == "Admin" ? "Admin" : role == "Employer" ? "Employer" : "JobSeeker";
+}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f8f7" />
+    <title>@ViewBag.Title - Corporate Portal</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="@Url.Action("Index", "Home")" aria-label="Corporate Portal home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg>
+                </span>
+                <span>Corporate <span class="brand-accent">Portal</span><span class="brand-dot">.</span></span>
+            </a>
+
+            <nav class="main-nav" id="main-navigation" aria-label="Main navigation">
+                @if (role == "Jobseeker")
+                {
+                    @Html.ActionLink("Find Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class = currentController == "JobSeeker" && currentAction == "SearchJobs_Pageload" ? "active" : null })
+                    @Html.ActionLink("My Jobs", "MyJobs_Pageload", "JobSeeker", null, new { @class = currentController == "JobSeeker" && currentAction == "MyJobs_Pageload" ? "active" : null })
+                    @Html.ActionLink("My Applications", "MyApplications_Pageload", "JobSeeker", null, new { @class = currentController == "JobSeeker" && currentAction == "MyApplications_Pageload" ? "active" : null })
+                    @Html.ActionLink("My Career", "Dashboard_Pageload", "JobSeeker", null, new { @class = currentController == "JobSeeker" && currentAction == "Dashboard_Pageload" ? "active" : null })
+                    @Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker", null, new { @class = currentController == "JobSeeker" && currentAction == "Profile_Pageload" ? "active" : null })
+                }
+                else if (role == "Employer")
+                {
+                    @Html.ActionLink("Dashboard", "Dashboard_Pageload", "Employer", null, new { @class = currentController == "Employer" && currentAction == "Dashboard_Pageload" ? "active" : null })
+                    @Html.ActionLink("Post a Job", "PostJob_Pageload", "Employer", null, new { @class = currentController == "Employer" && currentAction == "PostJob_Pageload" ? "active" : null })
+                    @Html.ActionLink("Manage Jobs", "ManageJobs_Pageload", "Employer", null, new { @class = currentController == "Employer" && currentAction == "ManageJobs_Pageload" ? "active" : null })
+                    @Html.ActionLink("Applications", "Applications_Pageload", "Employer", null, new { @class = currentController == "Employer" && currentAction == "Applications_Pageload" ? "active" : null })
+                    @Html.ActionLink("Profile", "Profile_Pageload", "Employer", null, new { @class = currentController == "Employer" && currentAction == "Profile_Pageload" ? "active" : null })
+                }
+                else if (role == "Admin")
+                {
+                    @Html.ActionLink("Job Seekers", "ManageJobseekers_Pageload", "Admin", null, new { @class = currentAction == "ManageJobseekers_Pageload" ? "active" : null })
+                    @Html.ActionLink("Employers", "ManageEmployers_Pageload", "Admin", null, new { @class = currentAction == "ManageEmployers_Pageload" ? "active" : null })
+                    @Html.ActionLink("Jobs", "ManageJobs_Pageload", "Admin", null, new { @class = currentAction == "ManageJobs_Pageload" ? "active" : null })
+                }
+                else
+                {
+                    @Html.ActionLink("Find Jobs", "Index", "Home", null, new { @class = currentController == "Home" ? "active" : null })
+                    @Html.ActionLink("My Career", "Login_Pageload", "Login")
+                    @Html.ActionLink("For Employers", "Insert_Pageload", "employerReg")
+                }
+            </nav>
+
+            <div class="header-actions">
+                @if (authenticated)
+                {
+                    if (role == "Admin")
+                    {
+                        @Html.ActionLink("Admin Home", "Dashboard_Pageload", "Admin", null, new { @class = "jf-button-outline header-secondary" })
+                    }
+                    else if (role == "Employer")
+                    {
+                        @Html.ActionLink("Company Profile", "Profile_Pageload", "Employer", null, new { @class = "jf-button-outline header-secondary" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("My Profile", "Profile_Pageload", "JobSeeker", null, new { @class = "jf-button-outline header-secondary" })
+                    }
+                    using (Html.BeginForm("Logout", logoutController, FormMethod.Post, new { @class = "header-logout" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="jf-button">Sign out</button>
+                    }
+                }
+                else
+                {
+                    @Html.ActionLink("Sign in", "Login_Pageload", "Login", null, new { @class = "jf-button-outline header-secondary" })
+                    @Html.ActionLink("Get started", "Insert_Pageload", "JobSeekerReg", null, new { @class = "jf-button" })
+                }
+                <button type="button" class="mobile-menu" id="menu-toggle" aria-controls="main-navigation" aria-expanded="false" aria-label="Open navigation">
+                    <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    </header>
+
+    <div class="body-content">@RenderBody()</div>
+
+    <footer class="site-footer">
+        <a class="brand" href="@Url.Action("Index", "Home")">
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/></svg></span>
+            <span>Corporate <span class="brand-accent">Portal</span><span class="brand-dot">.</span></span>
+        </a>
+        <span class="footer-copy">A better next chapter starts here.</span>
+        <span>© @DateTime.Now.Year Corporate Portal</span>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        (function () {
+            var toggle = document.getElementById('menu-toggle');
+            var navigation = document.getElementById('main-navigation');
+            if (!toggle || !navigation) return;
+            toggle.addEventListener('click', function () {
+                var open = navigation.classList.toggle('is-open');
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+            });
+            navigation.addEventListener('click', function (event) {
+                if (event.target && event.target.tagName === 'A') {
+                    navigation.classList.remove('is-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.setAttribute('aria-label', 'Open navigation');
+                }
+            });
+        })();
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,86 @@
+@model IEnumerable<CorporatePortal.Models.EmployerApplicationViewModel>
+@using System.Linq
+@{
+    ViewBag.Title = "Applications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var applications = Model ?? Enumerable.Empty<CorporatePortal.Models.EmployerApplicationViewModel>();
+}
+
+<main class="page-wrap">
+    <div class="dashboard-shell">
+        <nav class="dashboard-nav" aria-label="Employer workspace">
+            <p class="dashboard-nav-title">For Employers</p>
+            @Html.ActionLink("Dashboard", "Dashboard_Pageload", "Employer")
+            @Html.ActionLink("Post a Job", "PostJob_Pageload", "Employer")
+            @Html.ActionLink("Manage Jobs", "ManageJobs_Pageload", "Employer")
+            @Html.ActionLink("Applications", "Applications_Pageload", "Employer", null, new { @class = "active", aria_current = "page" })
+            @Html.ActionLink("Profile", "Profile_Pageload", "Employer")
+        </nav>
+
+        <section class="dashboard-main">
+            <div class="dashboard-heading">
+                <div><span class="eyebrow">YOUR HIRING WORKSPACE</span><h1>Applications</h1><p>Review candidates who applied to your job listings.</p></div>
+                @Html.ActionLink("Back to Dashboard", "Dashboard_Pageload", "Employer", null, new { @class = "jf-button-outline" })
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="success-message" role="status">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
+            }
+
+            @if (!applications.Any())
+            {
+                <div class="empty-state"><h3>No applications yet</h3><p>No applications have been submitted for your jobs yet.</p></div>
+            }
+            else
+            {
+                <div class="table-wrap applications-table-wrap">
+                    <table class="applications-table">
+                        <thead>
+                            <tr><th>Applicant</th><th>Job</th><th>Applied</th><th>Status</th><th>Profile</th><th>Cover letter</th><th>Resume</th></tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var application in applications)
+                        {
+                            <tr>
+                                <td><strong>@application.JobseekerName</strong><br /><a href="mailto:@application.Email">@application.Email</a><br />@application.Phone</td>
+                                <td>@application.JobTitle <span class="muted-text">(#@application.JobId)</span></td>
+                                <td>@application.AppliedDate.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    @using (Html.BeginForm("UpdateApplicationStatus", "Employer", FormMethod.Post, new { @class = "application-status-form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("applicationId", application.ApplicationId)
+                                        @Html.DropDownList("status", new SelectList(new[] { "Pending", "Shortlisted", "Interview", "Rejected", "Hired" }, application.Status), new { @class = "form-control", aria_label = "Application status" })
+                                        <button type="submit" class="jf-button-outline">Save</button>
+                                    }
+                                </td>
+                                <td>
+                                    <strong>Qualification:</strong> @application.Qualification<br />
+                                    <strong>Skills:</strong> @application.Skills<br />
+                                    <strong>Experience:</strong> @application.Experience
+                                </td>
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(application.CoverLetter))
+                                    {
+                                        <span class="muted-text">Not provided</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@application.CoverLetter</span>
+                                    }
+                                </td>
+                                <td>@(string.IsNullOrWhiteSpace(application.ResumePath) ? "Not provided" : "Available")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+    </div>
+</main>

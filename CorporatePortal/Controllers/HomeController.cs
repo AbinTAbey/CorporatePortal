@@ -38,9 +38,10 @@ namespace CorporatePortal.Controllers
                         "SUCCESS: Connected to " + con.Database);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Content("FAILED: " + ex.Message);
+                return Content(
+                    "FAILED: Could not connect to the application database.");
             }
         }
 

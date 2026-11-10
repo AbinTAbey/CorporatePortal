@@ -13,9 +13,17 @@
         <EntityTypeShape EntityType="CorporatePortalModel.Login" Width="1.5" PointX="6" PointY="5.5" IsExpanded="true" />
         <AssociationConnector Association="CorporatePortalModel.FK__CompanyDe__Emplo__5AEE82B9" ManuallyRouted="false" />
         <AssociationConnector Association="CorporatePortalModel.FK__Jobs__EmployerId__571DF1D5" ManuallyRouted="false" />
-        <AssociationConnector Association="CorporatePortalModel.FK__Login__EmployerI__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="CorporatePortalModel.FK__Login__EmployerI__52593CB8" ManuallyRouted="true" >
+          <ConnectorPoint PointX="2.25" PointY="6.7162223307291669" />
+          <ConnectorPoint PointX="6" PointY="6.7162223307291669" />
+        </AssociationConnector>
         <AssociationConnector Association="CorporatePortalModel.FK__Jobseeker__Jobse__5EBF139D" ManuallyRouted="false" />
         <AssociationConnector Association="CorporatePortalModel.FK__Login__Jobseeker__5165187F" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CorporatePortalModel.JobApplication" Width="1.5" PointX="9" PointY="4" />
+        <AssociationConnector Association="CorporatePortalModel.FK_JobApplication_Jobs" />
+        <AssociationConnector Association="CorporatePortalModel.FK_JobApplication_Jobseeker" />
+        <AssociationConnector Association="CorporatePortalModel.FK_JobApplication_Jobs" />
+        <AssociationConnector Association="CorporatePortalModel.FK_JobApplication_Jobseeker" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,63 +1,117 @@
-﻿
 @model IEnumerable<CorporatePortal.Models.sp_GetJobs_Result>
 @using System.Linq
+@using System.Collections.Generic
 @{
-    ViewBag.Title = "Search Jobs";
+    ViewBag.Title = "Find Jobs";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var jobCount = Model == null ? 0 : Model.Count();
+    var savedJobIds = ViewBag.SavedJobIds as HashSet<int> ?? new HashSet<int>();
 }
-<style>
-    .finder-page { --cream:#fbf5ed; --coral:#e87562; --ink:#292521; --line:#ded3c7; color:var(--ink); background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:24px; margin:18px 0; }
-    .finder-shell { display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; } .finder-sidebar,.finder-panel,.finder-table-wrap,.finder-empty { background:#fffdf9; border:1px solid var(--line); border-radius:10px; }
-    .finder-sidebar { padding:18px; } .finder-sidebar h2 { font-size:18px; margin:2px 0 16px; } .finder-nav { list-style:none; padding:0; margin:0; } .finder-nav li { margin:5px 0; }
-    .finder-nav a,.finder-logout { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; } .finder-nav a:hover,.finder-nav a.active { background:#f5e7db; text-decoration:none; }
-    .finder-logout,.finder-button { background:var(--coral); color:#fff; border:0; border-radius:6px; padding:10px 14px; } .finder-logout { width:100%; text-align:left; margin-top:6px; } .finder-button:hover,.finder-logout:hover { background:#d85f4d; color:#fff; }
-    .finder-content { min-width:0; } .finder-content h1 { margin:5px 0 18px; font-weight:700; } .finder-panel { padding:18px; margin-bottom:18px; }
-    .finder-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:end; } .finder-form .form-group { margin:0; }
-    .finder-form .form-control { max-width:none; min-height:40px; border-color:#cbb9a8; border-radius:7px; box-shadow:none; } .finder-actions { display:flex; gap:9px; flex-wrap:wrap; }
-    .finder-table-wrap { overflow-x:auto; } .finder-table { margin:0; min-width:760px; color:var(--ink); } .finder-table thead { background:#f1e5d9; }
-    .finder-table>thead>tr>th { border-bottom:2px solid #cbb9a8; } .finder-table>tbody>tr>td,.finder-table>thead>tr>th { border-color:var(--line); padding:12px; vertical-align:middle; }
-    .finder-empty { padding:20px; border-style:dashed; color:#6b625a; }
-    @@media(max-width:767px) { .finder-page{padding:15px;} .finder-shell{grid-template-columns:1fr;gap:16px;} .finder-form{grid-template-columns:1fr;} }
-</style>
-<main class="finder-page"><div class="finder-shell">
-    <aside class="finder-sidebar" aria-label="Job Seeker navigation"><h2>Job Finder</h2><ul class="finder-nav">
-        <li>@Html.ActionLink("Dashboard", "Dashboard_Pageload", "JobSeeker")</li><li>@Html.ActionLink("Search Jobs", "SearchJobs_Pageload", "JobSeeker", null, new { @class="active", aria_current="page" })</li>
-        <li>@Html.ActionLink("Profile", "Profile_Pageload", "JobSeeker")</li>
-    </ul>
-    @using (Html.BeginForm("Logout", "JobSeeker", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="finder-logout">Logout</button>
-    }
-    </aside>
-    <section class="finder-content"><h1>Search Jobs</h1>
-        <div class="finder-panel">
-            @using (Html.BeginForm("SearchJobs_Pageload", "JobSeeker", FormMethod.Get, new { @class="finder-form" }))
-            {
-                <div class="form-group"><label for="jobTitle">Job Title</label>@Html.TextBox("jobTitle", Request["jobTitle"], new { @class="form-control", id="jobTitle" })</div>
-                <div class="form-group"><label for="experienceRequired">Experience</label>@Html.TextBox("experienceRequired", Request["experienceRequired"], new { @class="form-control", id="experienceRequired" })</div>
-                <div class="form-group"><label for="salaryRange">Salary Range</label>@Html.TextBox("salaryRange", Request["salaryRange"], new { @class="form-control", id="salaryRange" })</div>
-                <div class="form-group"><label for="location">Location</label>@Html.TextBox("location", Request["location"], new { @class="form-control", id="location" })</div>
-                <div class="finder-actions"><button type="submit" class="finder-button">Search</button>@Html.ActionLink("Clear Filters", "SearchJobs_Pageload", "JobSeeker", null, new { @class="btn btn-default" })</div>
-            }
-        </div>
-        @if (Model == null || !Model.Any())
-        {
-            <div class="finder-empty">No jobs matched your search. Try changing or clearing the filters.</div>
-        }
-        else
-        {
-            <div class="finder-table-wrap"><table class="table table-striped finder-table">
-                <thead><tr><th>Job Title</th><th>Company</th><th>Location</th><th>Experience</th><th>Salary</th><th>Job Type</th><th>Details</th></tr></thead>
-                <tbody>
-                @foreach (var job in Model)
-                {
-                    <tr><td>@job.JobTitle</td><td>@job.CompanyName</td><td>@job.Location</td><td>@job.ExperienceRequired</td><td>@job.SalaryRange</td><td>@job.JobType</td>
-                        <td>@Html.ActionLink("Details", "JobDetails_Pageload", "JobSeeker", new { id = job.JobId }, new { @class="btn btn-default btn-sm" })</td></tr>
-                }
-                </tbody>
-            </table></div>
-        }
-    </section>
-</div></main>
 
+<main class="page-wrap">
+    <section class="browse-intro">
+        <div>
+            <span class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span>
+            <h1>Find work that <span>works for you.</span></h1>
+            <p class="intro-copy">Search current listings by title, skills, experience, salary range, and location.</p>
+        </div>
+        <div class="intro-side"><strong>Your next move starts here.</strong><p>Refine your search to find roles that fit your experience and goals.</p></div>
+    </section>
+
+    @using (Html.BeginForm("SearchJobs_Pageload", "JobSeeker", FormMethod.Get, new { role = "search" }))
+    {
+        <div class="search-bar">
+            <label class="search-field" for="job-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                @Html.TextBox("jobTitle", Request.QueryString["jobTitle"], new { id = "job-title", placeholder = "Job title or keyword", aria_label = "Job title or keyword" })
+            </label>
+            <label class="search-field" for="job-location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                @Html.TextBox("location", Request.QueryString["location"], new { id = "job-location", placeholder = "City, region, or anywhere", aria_label = "Location" })
+            </label>
+            <label class="search-field" for="job-skills">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></svg>
+                @Html.TextBox("skills", Request.QueryString["skills"], new { id = "job-skills", placeholder = "Skills, e.g. SQL, Python, C#", aria_label = "Search by skills" })
+            </label>
+            <button type="submit" class="jf-button"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Search Jobs</button>
+        </div>
+
+        <div class="popular-searches">
+            <span>Popular searches:</span>
+            @Html.ActionLink("Product Designer", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Product Designer" }, null)
+            @Html.ActionLink("Frontend Engineer", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Frontend Engineer" }, null)
+            @Html.ActionLink("Marketing", "SearchJobs_Pageload", "JobSeeker", new { jobTitle = "Marketing" }, null)
+        </div>
+    }
+
+    <div class="browse-layout">
+            <aside class="filters" aria-label="Search filters">
+                <div class="filter-heading"><h2>Refine search</h2>@Html.ActionLink("Clear all", "SearchJobs_Pageload", "JobSeeker")</div>
+                @using (Html.BeginForm("SearchJobs_Pageload", "JobSeeker", FormMethod.Get, new { role = "search", @class = "filter-form" }))
+                {
+                    @Html.Hidden("jobTitle", Request.QueryString["jobTitle"])
+                    @Html.Hidden("location", Request.QueryString["location"])
+                    @Html.Hidden("skills", Request.QueryString["skills"])
+                <section class="filter-group">
+                    <div class="filter-field"><label for="experience-required">Experience required</label>@Html.TextBox("experienceRequired", Request.QueryString["experienceRequired"], new { id = "experience-required", placeholder = "e.g. 2+ years" })</div>
+                </section>
+                <section class="filter-group">
+                    <div class="filter-field"><label for="salary-range">Salary range</label>@Html.TextBox("salaryRange", Request.QueryString["salaryRange"], new { id = "salary-range", placeholder = "e.g. ₹5–8 LPA" })</div>
+                </section>
+                    <button type="submit" class="jf-button-outline">Apply filters</button>
+                }
+                <div class="career-banner">
+                    <img src="@Url.Content("~/Content/workspace.jpg")" alt="A calm, bright workspace" loading="lazy" />
+                    <div><h3>Your next big thing is out there.</h3><p>Keep your profile and resume ready as you explore.</p>@Html.ActionLink("Build your profile", "Profile_Pageload", "JobSeeker", null, new { @class = "jf-button-outline" })</div>
+                </div>
+            </aside>
+
+            <section aria-labelledby="opportunities-title">
+                <div class="results-header"><h2 id="opportunities-title">Explore opportunities <small>@jobCount listings</small></h2></div>
+                <div class="results-tabs"><span>Current listings</span></div>
+                @if (jobCount == 0)
+                {
+                    <div class="empty-state"><h3>No matching opportunities</h3><p>Try another keyword or adjust your skills, experience, salary, or location filters.</p>@Html.ActionLink("Clear filters", "SearchJobs_Pageload", "JobSeeker", null, new { @class = "jf-button-outline" })</div>
+                }
+                else
+                {
+                    <div class="job-grid">
+                        @foreach (var job in Model)
+                        {
+                            var companyName = string.IsNullOrWhiteSpace(job.CompanyName) ? "Company" : job.CompanyName.Trim();
+                            var initial = companyName.Substring(0, 1).ToUpperInvariant();
+                            var skillTags = (job.RequiredSkills ?? string.Empty).Split(new[] { ',', ';' }, System.StringSplitOptions.RemoveEmptyEntries).Select(skill => skill.Trim()).Where(skill => skill.Length > 0).ToList();
+                            <article class="job-card">
+                                <div class="company-row"><div class="company-logo" aria-hidden="true">@initial</div><div class="company-name">@companyName</div></div>
+                                @Html.ActionLink(job.JobTitle, "JobDetails_Pageload", "JobSeeker", new { id = job.JobId }, new { @class = "job-title" })
+                                <div class="job-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>@job.Location</div>
+                                <div class="job-tags">
+                                    @if (!string.IsNullOrWhiteSpace(job.JobType)) { <span class="category-tag">@job.JobType</span> }
+                                    @if (!string.IsNullOrWhiteSpace(job.ExperienceRequired)) { <span>@job.ExperienceRequired</span> }
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(job.JobDescription))
+                                {
+                                    <p class="job-description">@job.JobDescription</p>
+                                }
+                                @if (skillTags.Any())
+                                {
+                                    <div class="job-skills"><span class="job-skills-label">Required skills</span><div class="job-tags skill-tags">
+                                        @foreach (var skill in skillTags) { <span>@skill</span> }
+                                    </div></div>
+                                }
+                                <div class="job-card-bottom"><span class="salary">@job.SalaryRange</span>@Html.ActionLink("↗", "JobDetails_Pageload", "JobSeeker", new { id = job.JobId }, new { @class = "job-arrow", aria_label = "View details for " + job.JobTitle })</div>
+                                @using (Html.BeginForm(savedJobIds.Contains(job.JobId) ? "RemoveSavedJob" : "SaveJob", "JobSeeker", FormMethod.Post, new { @class = "job-save-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("id", job.JobId)
+                                    @Html.Hidden("source", "Search")
+                                    <button type="submit" class="jf-button-outline">@(savedJobIds.Contains(job.JobId) ? "Remove from Saved" : "Save Job")</button>
+                                }
+                            </article>
+                        }
+                    </div>
+                }
+                <div class="results-bottom"><span>Showing @jobCount listing@(jobCount == 1 ? "" : "s")</span></div>
+            </section>
+        </div>
+</main>
