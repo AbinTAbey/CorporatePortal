@@ -175,21 +175,6 @@ The application uses Microsoft SQL Server as its relational database.
 
 Database primary keys, foreign keys, unique constraints, and transactions are used to maintain data consistency.
 
-### Important Stored Procedures
-
-The project uses stored procedures for database operations, including:
-
-- `sp_RegisterUser` – User registration.
-- `sp_ValidateLogin` – Login validation.
-- `sp_CreateAdmin` – Administrator creation.
-- `sp_ManageJobseekerProfile` – Job seeker profile management.
-- `sp_ManageCompanyDetails` – Company profile management.
-- `sp_ManageJobs` – Job insertion, updating, and deletion.
-- `sp_GetJobs` – Job search with multiple filters.
-- `sp_GetEmployerJobs` – Retrieves jobs belonging to an employer.
-- `sp_GetJobDetails` – Retrieves individual job details.
-- `sp_ApplyForJob` – Submits job applications.
-- `sp_GetEmployerApplications` – Retrieves applications for an employer's jobs.
 
 ---
 
@@ -197,15 +182,6 @@ The project uses stored procedures for database operations, including:
 
 The application uses an **Emerald & Charcoal** visual theme.
 
-Design characteristics include:
-
-- Emerald green primary accents.
-- Charcoal typography and interface elements.
-- Clean card-based layouts.
-- Consistent forms and navigation.
-- Responsive dashboard layouts.
-- Role-specific navigation menus.
-- Clear application status indicators.
 
 ---
 
